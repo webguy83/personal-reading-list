@@ -42,3 +42,12 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Challenge reference files (used during development, not part of your solution)
+/spec
+/guidance
+/data/README.md
+/AGENTS.md
+/CLAUDE.md
+/README-template.md
+/preview.jpg

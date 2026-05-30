@@ -1,0 +1,59 @@
+<div class="shelf-page">
+  <header class="page-header">
+    <a mat-icon-button routerLink="/library" aria-label="Back to library">
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+    <div class="header-info">
+      <h1 class="page-title">{{ shelf()?.name ?? 'Shelf' }}</h1>
+      <p class="page-sub">{{ books().length }} books</p>
+    </div>
+    <mat-select
+      class="sort-select"
+      [value]="'dateAdded'"
+      (valueChange)="updateSort($event)"
+      aria-label="Sort by"
+    >
+      @for (opt of sortOptions; track opt.value) {
+        <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+      }
+    </mat-select>
+  </header>
+
+  @if (books().length === 0) {
+    <app-empty-state
+      icon="bookmark_border"
+      title="No books here yet"
+      message="Use search to find books and add them to this shelf."
+      actionLabel="Search books"
+      actionRoute="/search"
+    />
+  } @else {
+    <div class="book-list">
+      @for (book of books(); track book.id) {
+        <a class="book-row" [routerLink]="['/library/book', book.id]">
+          <app-book-cover
+            [coverUrl]="book.coverUrl"
+            [title]="book.title"
+            [author]="book.authors[0]"
+            [size]="64"
+          />
+          <div class="book-row-info">
+            <p class="book-title">{{ book.title }}</p>
+            <p class="book-author">{{ book.authors[0] }}</p>
+            @if (book.genres.length) {
+              <p class="book-genre">{{ book.genres![0] }}</p>
+            }
+          </div>
+          <div class="book-row-meta">
+            @if (book.rating) {
+              <app-star-rating [rating]="book.rating" [readonly]="true" />
+            }
+            @if (book.pageCount) {
+              <span class="book-pages">{{ book.pageCount }} pp</span>
+            }
+          </div>
+        </a>
+      }
+    </div>
+  }
+</div>

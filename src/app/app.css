@@ -1,0 +1,77 @@
+/* ─── App Container ──────────────────────────────────────────────────────── */
+
+.app-container {
+  height: 100dvh;
+}
+
+/* Smooth width transition when collapsing/expanding the sidenav */
+mat-sidenav {
+  transition: width 0.25s ease;
+  overflow: hidden;
+}
+
+/* ─── Mobile toolbar ─────────────────────────────────────────────────────── */
+.mobile-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.toolbar-brand {
+  margin-left: 0.5rem;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+/* ─── Main content ───────────────────────────────────────────────────────── */
+.main-content {
+  padding-bottom: 4.5rem; /* space for mobile bottom nav */
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    padding-bottom: 0;
+  }
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+}
+
+/* ─── Mobile bottom navigation ──────────────────────────────────────────── */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.mobile-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0.5rem 0 0.625rem;
+  text-decoration: none;
+  color: var(--color-text-tertiary);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  transition: color 0.15s;
+}
+
+.mobile-nav-item mat-icon {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+}
+
+.mobile-nav-item--active {
+  color: var(--color-accent);
+}

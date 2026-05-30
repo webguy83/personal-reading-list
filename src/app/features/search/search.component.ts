@@ -1,0 +1,73 @@
+import { Component, inject, signal, ChangeDetectionStrategy, effect } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { BookApiService } from '../../core/services/book-api.service';
+import { LibraryStore } from '../../core/stores/library.store';
+import { BookCoverComponent } from '../../shared/components/book-cover/book-cover.component';
+import { SearchResult } from '../../shared/models';
+import { debounceTime, distinctUntilChanged, Subject, switchMap, catchError, of } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+
+@Component({
+  selector: 'app-search',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatMenuModule, MatProgressSpinnerModule, BookCoverComponent],
+  templateUrl: './search.html',
+  styleUrl: './search.css',
+})
+export class SearchComponent {
+  private readonly api = inject(BookApiService);
+  protected readonly store = inject(LibraryStore);
+
+  protected readonly query = signal('');
+  protected readonly searching = signal(false);
+  protected readonly results = signal<SearchResult[]>([]);
+
+  private readonly search$ = new Subject<string>();
+
+  private readonly searchResult = toSignal(
+    this.search$.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      switchMap(q => {
+        if (!q.trim()) { this.searching.set(false); return of([] as SearchResult[]); }
+        this.searching.set(true);
+        return this.api.search(q).pipe(catchError(() => of([] as SearchResult[])));
+      }),
+    ),
+    { initialValue: [] as SearchResult[] },
+  );
+
+  constructor() {
+    effect(() => {
+      const r = this.searchResult();
+      this.results.set(r);
+      this.searching.set(false);
+    });
+  }
+
+  protected onQueryChange(q: string): void {
+    this.query.set(q);
+    if (q.trim()) this.searching.set(true);
+    this.search$.next(q);
+  }
+
+  protected clear(): void {
+    this.query.set('');
+    this.results.set([]);
+    this.searching.set(false);
+  }
+
+  protected addToShelf(result: SearchResult, shelfId: string): void {
+    this.store.addBook(result, shelfId);
+  }
+
+  protected isInLibrary(apiId: string): boolean {
+    return this.store.isBookInLibrary(apiId);
+  }
+}

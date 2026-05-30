@@ -1,0 +1,74 @@
+<div class="search-page">
+  <header class="page-header">
+    <h1 class="page-title">Search Books</h1>
+    <p class="page-sub">Find books by title, author, or ISBN</p>
+  </header>
+
+  <!-- ─── Search input ──────────────────────────────────────────────────── -->
+  <div class="search-bar">
+    <mat-icon class="search-icon">search</mat-icon>
+    <input
+      class="search-input"
+      type="search"
+      [ngModel]="query()"
+      (ngModelChange)="onQueryChange($event)"
+      placeholder="Search by title, author, or ISBN…"
+      aria-label="Search books"
+      autocomplete="off"
+    />
+    @if (searching()) {
+      <mat-spinner diameter="20" class="search-spinner" />
+    }
+    @if (query() && !searching()) {
+      <button mat-icon-button class="clear-btn" (click)="clear()" aria-label="Clear search">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </div>
+
+  <!-- ─── Results ───────────────────────────────────────────────────────── -->
+  @if (results().length > 0) {
+    <p class="results-count">{{ results().length }} results for "{{ query() }}"</p>
+
+    <div class="results-grid">
+      @for (book of results(); track book.apiId) {
+        <div class="result-card">
+          <app-book-cover [coverUrl]="book.coverUrl" [title]="book.title" [author]="book.authors[0]" [size]="80" />
+          <div class="result-info">
+            <p class="result-title">{{ book.title }}</p>
+            <p class="result-author">{{ book.authors[0] }}</p>
+            @if (book.publishYear) {
+              <p class="result-year">{{ book.publishYear }}</p>
+            }
+          </div>
+          @if (isInLibrary(book.apiId)) {
+            <span class="in-library-badge">In library</span>
+          } @else {
+            <button mat-icon-button [matMenuTriggerFor]="addMenu" class="add-btn" aria-label="Add to shelf">
+              <mat-icon>add</mat-icon>
+            </button>
+            <mat-menu #addMenu="matMenu">
+              @for (shelf of store.shelvesWithCounts(); track shelf.id) {
+                <button mat-menu-item (click)="addToShelf(book, shelf.id)">
+                  <mat-icon>bookmark_border</mat-icon>
+                  {{ shelf.name }}
+                </button>
+              }
+            </mat-menu>
+          }
+        </div>
+      }
+    </div>
+  } @else if (query() && !searching()) {
+    <div class="no-results">
+      <mat-icon>search_off</mat-icon>
+      <p>No books found for "{{ query() }}".</p>
+      <p class="no-results-hint">Try a different title, author, or ISBN.</p>
+    </div>
+  } @else if (!query()) {
+    <div class="search-prompt">
+      <mat-icon>auto_stories</mat-icon>
+      <p>Search the Open Library to find books to add to your shelves.</p>
+    </div>
+  }
+</div>

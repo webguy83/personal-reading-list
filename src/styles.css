@@ -1,3 +1,96 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+@import '../starter/tokens.css';
+
+/* ─── Angular Material M3 token overrides ─────────────────────────────────── */
+:root {
+  --mat-sys-primary: var(--color-accent);
+  --mat-sys-on-primary: #fff;
+  --mat-sys-primary-container: var(--color-accent-subtle);
+  --mat-sys-surface: var(--color-surface);
+  --mat-sys-surface-container: var(--color-bg-secondary);
+  --mat-sys-surface-container-high: var(--color-bg-tertiary);
+  --mat-sys-on-surface: var(--color-text-primary);
+  --mat-sys-on-surface-variant: var(--color-text-secondary);
+  --mat-sys-outline: var(--color-border);
+  --mat-sys-outline-variant: var(--color-border-subtle);
+  --mat-sys-error: var(--color-error);
+  --mat-sys-background: var(--color-bg-primary);
+  --mat-sys-on-background: var(--color-text-primary);
+  --mat-sys-secondary: var(--color-text-secondary);
+  --mat-sys-on-secondary: var(--color-bg-primary);
+  --mat-icon-color: var(--color-text-secondary);
+}
+
+/* ─── Base ────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  line-height: var(--leading-relaxed);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Typography ──────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: var(--leading-tight);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-tertiary); }
+
+/* ─── Focus ───────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ─── Dark mode class (ThemeService applies .dark to <html>) ──────────────── */
+.dark {
+  --color-bg-primary: #1a1512;
+  --color-bg-secondary: #231e1a;
+  --color-bg-tertiary: #2e2822;
+  --color-surface: #231e1a;
+  --color-border: #3d352d;
+  --color-border-subtle: #2e2822;
+
+  --color-text-primary: #ede8e2;
+  --color-text-secondary: #a89e94;
+  --color-text-tertiary: #7a716a;
+
+  --color-accent: #d4964a;
+  --color-accent-hover: #e0a85e;
+  --color-accent-subtle: #2e2218;
+
+  --color-success: #5aaf6e;
+  --color-warning: #d4a03e;
+  --color-error: #e8614d;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
+  --shadow-md: 0 4px 8px -1px rgba(0,0,0,.4), 0 2px 4px -2px rgba(0,0,0,.25);
+  --shadow-lg: 0 12px 20px -4px rgba(0,0,0,.5), 0 4px 8px -4px rgba(0,0,0,.3);
+}
+

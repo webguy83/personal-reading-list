@@ -1,0 +1,143 @@
+@if (book(); as b) {
+  <div class="book-detail-page">
+    <!-- ─── Back + Actions ────────────────────────────────────────────────── -->
+    <div class="top-bar">
+      <a mat-icon-button routerLink="/library" aria-label="Back to library">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <div class="top-actions">
+        <!-- Move shelf menu -->
+        <button mat-icon-button [matMenuTriggerFor]="shelfMenu" aria-label="Move to shelf">
+          <mat-icon>drive_file_move</mat-icon>
+        </button>
+        <mat-menu #shelfMenu="matMenu">
+          @for (shelf of store.shelvesWithCounts(); track shelf.id) {
+            <button mat-menu-item (click)="moveToShelf(shelf.id)" [disabled]="shelf.id === b.shelfId">
+              {{ shelf.name }}
+              @if (shelf.id === b.shelfId) { <mat-icon>check</mat-icon> }
+            </button>
+          }
+        </mat-menu>
+
+        <button mat-icon-button color="warn" (click)="deleteBook()" aria-label="Remove book">
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── Book Header ──────────────────────────────────────────────────── -->
+    <div class="book-header">
+      <div class="book-cover-wrap">
+        <app-book-cover [coverUrl]="b.coverUrl" [title]="b.title" [author]="b.authors[0]" [size]="120" />
+      </div>
+      <div class="book-meta">
+        <h1 class="book-title">{{ b.title }}</h1>
+        <p class="book-author">{{ b.authors.join(', ') }}</p>
+        @if (shelfName()) {
+          <span class="shelf-badge">{{ shelfName() }}</span>
+        }
+        <div class="book-attrs">
+          @if (b.publishYear) { <span>{{ b.publishYear }}</span> }
+          @if (b.pageCount) { <span>{{ b.pageCount }} pages</span> }
+          @if (b.publisher) { <span>{{ b.publisher }}</span> }
+        </div>
+        @if (b.genres.length) {
+          <div class="genre-chips">
+            @for (g of b.genres!.slice(0, 4); track g) {
+              <span class="genre-chip">{{ g }}</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- ─── Rating ───────────────────────────────────────────────────────── -->
+    <section class="detail-section">
+      <h2 class="section-label">Your rating</h2>
+      <app-star-rating [rating]="b.rating" (rateChange)="rate($event)" />
+    </section>
+
+    <!-- ─── Progress (currently reading) ───────────────────────────────── -->
+    @if (b.shelfId === 'currently-reading') {
+      <section class="detail-section">
+        <div class="section-row">
+          <h2 class="section-label">Reading progress</h2>
+          <button mat-icon-button (click)="startEditProgress()" aria-label="Edit progress">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+
+        @if (editingProgress()) {
+          <div class="progress-edit">
+            <input
+              type="number"
+              class="page-input"
+              [value]="currentPageInput()"
+              (input)="currentPageInput.set(+$any($event.target).value)"
+              [min]="0"
+              [max]="b.pageCount ?? 9999"
+              aria-label="Current page"
+            />
+            <span class="page-of">/ {{ b.pageCount ?? '?' }}</span>
+            <button mat-flat-button class="save-btn" (click)="saveProgress()">Save</button>
+            <button mat-button (click)="editingProgress.set(false)">Cancel</button>
+          </div>
+        } @else if (progress()) {
+          <app-reading-progress-bar
+            [percentage]="progress()!.percentage"
+            [currentPage]="progress()!.currentPage"
+            [totalPages]="b.pageCount"
+            [showLabel]="true"
+          />
+        } @else {
+          <p class="no-data-text">No progress tracked yet.</p>
+        }
+      </section>
+    }
+
+    <!-- ─── Notes ────────────────────────────────────────────────────────── -->
+    <section class="detail-section">
+      <div class="section-row">
+        <h2 class="section-label">Notes</h2>
+        <button mat-icon-button (click)="startEditNotes()" aria-label="Edit notes">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+
+      @if (editingNotes()) {
+        <div class="notes-edit">
+          <textarea
+            class="notes-textarea"
+            [value]="notesInput()"
+            (input)="notesInput.set($any($event.target).value)"
+            rows="5"
+            placeholder="Your thoughts about this book..."
+            aria-label="Notes"
+          ></textarea>
+          <div class="notes-actions">
+            <button mat-flat-button class="save-btn" (click)="saveNotes()">Save</button>
+            <button mat-button (click)="editingNotes.set(false)">Cancel</button>
+          </div>
+        </div>
+      } @else if (b.notes) {
+        <p class="notes-text">{{ b.notes }}</p>
+      } @else {
+        <p class="no-data-text">No notes yet. Tap edit to add your thoughts.</p>
+      }
+    </section>
+
+    <!-- ─── Description ───────────────────────────────────────────────────── -->
+    @if (b.description) {
+      <section class="detail-section">
+        <h2 class="section-label">About this book</h2>
+        <p class="description-text">{{ b.description }}</p>
+      </section>
+    }
+  </div>
+} @else {
+  <div class="not-found">
+    <mat-icon>search_off</mat-icon>
+    <p>Book not found.</p>
+    <a mat-button routerLink="/library">Back to library</a>
+  </div>
+}

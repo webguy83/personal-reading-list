@@ -1,0 +1,80 @@
+<!-- ─── Hero ──────────────────────────────────────────────────────────────── -->
+<div class="landing">
+  <header class="landing-header">
+    <a class="header-brand" routerLink="/">
+      <mat-icon class="header-brand-icon">auto_stories</mat-icon>
+      <span>Bookshelf</span>
+    </a>
+    <div class="header-actions">
+      <a mat-button routerLink="/auth/login">Sign in</a>
+      <a mat-flat-button routerLink="/auth/signup" class="btn-primary">Sign Up Free</a>
+    </div>
+  </header>
+
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Your reading life</p>
+      <h1 id="hero-heading" class="hero-heading">Beautifully<br>organised.</h1>
+      <p class="hero-subheading">
+        Search millions of books, track your reading, set annual goals, and
+        explore your reading year — all in one quiet, personal space.
+      </p>
+      <div class="hero-ctas">
+        <a mat-flat-button routerLink="/auth/signup" class="btn-primary btn-large">
+          <mat-icon>person_add</mat-icon>
+          Start for free
+        </a>
+        <button mat-stroked-button class="btn-ghost btn-large" (click)="enterGuest()">
+          <mat-icon>visibility</mat-icon>
+          Try as guest
+        </button>
+      </div>
+      <p class="hero-note">No account needed to explore · Your data stays private</p>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="cover-stack">
+        @for (cover of showcaseCovers; track cover; let i = $index) {
+          <div class="cover-item" [style.--i]="i">
+            <img [src]="cover" alt="" loading="lazy" />
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Features ──────────────────────────────────────────────────────── -->
+  <section class="features" aria-labelledby="features-heading">
+    <h2 id="features-heading" class="section-heading">Everything you need to track your reading</h2>
+    <div class="features-grid">
+      @for (feature of features; track feature.title) {
+        <div class="feature-card">
+          <div class="feature-icon">
+            <mat-icon>{{ feature.icon }}</mat-icon>
+          </div>
+          <h3 class="feature-title">{{ feature.title }}</h3>
+          <p class="feature-desc">{{ feature.description }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ─── Final CTA ─────────────────────────────────────────────────────── -->
+  <section class="final-cta">
+    <div class="final-cta-content">
+      <h2 class="final-cta-heading">Ready to start your reading journey?</h2>
+      <div class="final-cta-btns">
+        <a mat-flat-button routerLink="/auth/signup" class="btn-primary btn-large">Create free account</a>
+        <button mat-button class="btn-ghost" (click)="enterGuest()">Explore as guest →</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="landing-footer">
+    <div class="footer-brand">
+      <mat-icon>auto_stories</mat-icon>
+      <span>Bookshelf</span>
+    </div>
+    <p class="footer-tagline">Your reading life, beautifully organised.</p>
+  </footer>
+</div>

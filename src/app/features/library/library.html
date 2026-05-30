@@ -1,0 +1,114 @@
+<div class="library-page">
+  <!-- ─── Header ──────────────────────────────────────────────────────────── -->
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">My Library</h1>
+      <p class="page-sub">{{ store.books().length }} books</p>
+    </div>
+    <a mat-flat-button routerLink="/search" class="add-book-btn">
+      <mat-icon>add</mat-icon>
+      Add book
+    </a>
+  </header>
+
+  <!-- ─── Reading Goal Banner ─────────────────────────────────────────────── -->
+  @if (store.goalProgress(); as gp) {
+    <mat-card class="goal-banner">
+      <div class="goal-info">
+        <mat-icon>emoji_events</mat-icon>
+        <div>
+          <p class="goal-label">{{ currentYear }} Reading Goal</p>
+          <p class="goal-stat">
+            <strong>{{ gp.completed }}</strong> of {{ gp.goal.target }} books
+          </p>
+        </div>
+      </div>
+      <div class="goal-progress-wrap">
+        <div class="goal-track">
+          <div class="goal-fill" [style.width.%]="gp.percentage"></div>
+        </div>
+        <span class="goal-pct" [class]="'goal-pace--' + gp.pace">{{ gp.percentage }}%</span>
+      </div>
+    </mat-card>
+  }
+
+  <!-- ─── Currently Reading ───────────────────────────────────────────────── -->
+  @if (store.currentlyReading().length > 0) {
+    <section class="shelf-section" aria-labelledby="currently-reading-heading">
+      <div class="shelf-header">
+        <h2 id="currently-reading-heading" class="shelf-title">
+          <mat-icon>menu_book</mat-icon>
+          Currently Reading
+        </h2>
+        <a class="shelf-link" [routerLink]="['/library/shelf', 'currently-reading']">
+          View all <mat-icon>chevron_right</mat-icon>
+        </a>
+      </div>
+
+      <div class="current-reading-list">
+        @for (item of store.currentlyReading(); track item.id) {
+          <a class="current-reading-card" [routerLink]="['/library/book', item.id]">
+            <app-book-cover
+              [coverUrl]="item.coverUrl"
+              [title]="item.title"
+              [author]="item.authors[0]"
+              [size]="60"
+            />
+            <div class="current-reading-info">
+              <p class="book-title-text">{{ item.title }}</p>
+              <p class="book-author-text">{{ item.authors[0] }}</p>
+              @if (item.progress) {
+                <app-reading-progress-bar
+                  [percentage]="item.progress.percentage"
+                  [currentPage]="item.progress.currentPage"
+                  [totalPages]="item.pageCount"
+                  [showLabel]="true"
+                />
+              }
+            </div>
+          </a>
+        }
+      </div>
+    </section>
+  }
+
+  <!-- ─── Shelves ──────────────────────────────────────────────────────────── -->
+  @for (shelf of store.shelvesWithCounts(); track shelf.id) {
+    @if (shelf.id !== 'currently-reading') {
+      <section class="shelf-section" [attr.aria-labelledby]="'shelf-' + shelf.id">
+        <div class="shelf-header">
+          <h2 [id]="'shelf-' + shelf.id" class="shelf-title">
+            {{ shelf.name }}
+            <span class="shelf-count">{{ shelf.bookCount }}</span>
+          </h2>
+          <a class="shelf-link" [routerLink]="['/library/shelf', shelf.id]">
+            View all <mat-icon>chevron_right</mat-icon>
+          </a>
+        </div>
+
+        @if (store.booksOnShelf(shelf.id)().length > 0) {
+          <div class="cover-row">
+            @for (book of store.booksOnShelf(shelf.id)().slice(0, 8); track book.id) {
+              <a [routerLink]="['/library/book', book.id]" class="cover-link">
+                <app-book-cover
+                  [coverUrl]="book.coverUrl"
+                  [title]="book.title"
+                  [author]="book.authors[0]"
+                  [size]="90"
+                />
+              </a>
+            }
+          </div>
+        } @else {
+          <app-empty-state
+            icon="bookmark_border"
+            [title]="'No books on ' + shelf.name"
+            message="Search for books and add them to this shelf."
+            actionLabel="Find books"
+            actionRoute="/search"
+          />
+        }
+      </section>
+    }
+  }
+</div>

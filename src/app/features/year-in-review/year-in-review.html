@@ -1,0 +1,145 @@
+<div class="yir-page">
+  <header class="page-header">
+    <h1 class="page-title">{{ currentYear }} in Review</h1>
+    <p class="page-sub">Your reading story this year</p>
+  </header>
+
+  <!-- ─── Reading Goal ─────────────────────────────────────────────────── -->
+  @if (store.goalProgress(); as gp) {
+    <mat-card class="goal-card" aria-labelledby="goal-heading">
+      <mat-card-content>
+      <div class="goal-header">
+        <div>
+          <h2 id="goal-heading" class="card-title">Reading Goal</h2>
+          <p class="card-sub">{{ gp.completed }} of {{ gp.goal.target }} books</p>
+        </div>
+        <button mat-icon-button (click)="editingGoal.set(true)" aria-label="Edit goal">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+
+      @if (editingGoal()) {
+        <div class="goal-edit">
+          <input
+            type="number"
+            class="goal-input"
+            [value]="goalInput()"
+            (input)="goalInput.set(+$any($event.target).value)"
+            min="1" max="365"
+            aria-label="Book goal"
+          />
+          <span class="goal-input-label">books</span>
+          <button mat-flat-button class="save-btn" (click)="saveGoal()">Save</button>
+          <button mat-button (click)="editingGoal.set(false)">Cancel</button>
+        </div>
+      }
+
+      <div class="goal-track">
+        <div class="goal-fill" [style.width.%]="gp.percentage"></div>
+      </div>
+      <div class="goal-stats">
+        <span class="goal-pct">{{ gp.percentage }}%</span>
+        <span class="goal-pace" [class]="'pace--' + gp.pace">
+          <mat-icon>{{ gp.pace === 'ahead' ? 'trending_up' : gp.pace === 'behind' ? 'trending_down' : 'trending_flat' }}</mat-icon>
+          {{ gp.pace | titlecase }}
+        </span>
+      </div>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- ─── Year stats ────────────────────────────────────────────────────── -->
+  @if (store.yearStats(); as stats) {
+    <!-- Summary cards -->
+    <div class="stat-cards">
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <span class="stat-value">{{ stats.totalBooks }}</span>
+            <span class="stat-label">Books read</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <span class="stat-value">{{ stats.totalPages | number }}</span>
+            <span class="stat-label">Pages read</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <span class="stat-value">{{ stats.averageRating?.toFixed(1) ?? '—' }}</span>
+            <span class="stat-label">Avg rating</span>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="stat-card">
+          <mat-card-content>
+            <span class="stat-value">{{ stats.topGenre ?? '—' }}</span>
+            <span class="stat-label">Top genre</span>
+          </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- Reading by month -->
+    @if (stats.booksByMonth && stats.totalBooks > 0) {
+      <section class="detail-section" aria-labelledby="monthly-heading">
+        <h2 id="monthly-heading" class="section-title">Books per month</h2>
+        <div class="month-chart" role="img" aria-label="Books per month bar chart">
+          @for (entry of stats.booksByMonth | keyvalue; track entry.key) {
+            <div class="month-bar-wrap">
+              <div class="month-bar-fill" [style.height.%]="entry.value / maxMonthlyCount(stats.booksByMonth) * 100" [attr.aria-label]="entry.key + ': ' + entry.value + ' books'"></div>
+              <span class="month-label">{{ monthAbbr(entry.key) }}</span>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Genre breakdown -->
+    @if (stats.genreBreakdown && stats.totalBooks > 0) {
+      <section class="detail-section" aria-labelledby="genre-heading">
+        <h2 id="genre-heading" class="section-title">Genres</h2>
+        <div class="genre-list">
+          @for (entry of stats.genreBreakdown | keyvalue; track entry.key) {
+            <div class="genre-row">
+              <span class="genre-name">{{ entry.key }}</span>
+              <div class="genre-track">
+                <div class="genre-fill" [style.width.%]="entry.value / stats.totalBooks * 100"></div>
+              </div>
+              <span class="genre-count">{{ entry.value }}</span>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Highlights -->
+    @if (stats.longestBook) {
+      <section class="detail-section" aria-labelledby="highlights-heading">
+        <h2 id="highlights-heading" class="section-title">Highlights</h2>
+        <div class="highlights">
+          <div class="highlight-item">
+            <mat-icon>menu_book</mat-icon>
+            <div>
+              <p class="highlight-label">Longest book</p>
+              <p class="highlight-value">{{ stats.longestBook.title }} ({{ stats.longestBook.pageCount }} pages)</p>
+            </div>
+          </div>
+          @if (stats.shortestBook) {
+            <div class="highlight-item">
+              <mat-icon>bookmark</mat-icon>
+              <div>
+                <p class="highlight-label">Shortest book</p>
+                <p class="highlight-value">{{ stats.shortestBook.title }} ({{ stats.shortestBook.pageCount }} pages)</p>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    }
+  } @else {
+    <div class="empty-year">
+      <mat-icon>auto_stories</mat-icon>
+      <p>No books marked as read in {{ currentYear }} yet.</p>
+      <p class="empty-hint">Move books to your "Read" shelf to see your stats here.</p>
+    </div>
+  }
+</div>
