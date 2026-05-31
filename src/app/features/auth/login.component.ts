@@ -5,14 +5,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../core/auth/auth.service';
 import { AccentButtonDirective } from '../../shared/directives/accent-button.directive';
 
 @Component({
   selector: 'app-login',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, MatProgressSpinnerModule, AccentButtonDirective],
+  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, AccentButtonDirective],
   template: `
     <div class="auth-page">
       <div class="auth-card">
@@ -51,7 +50,7 @@ import { AccentButtonDirective } from '../../shared/directives/accent-button.dir
           <a routerLink="/auth/reset-password" class="forgot-link">Forgot password?</a>
 
           <button mat-flat-button appAccentButton type="submit" class="auth-submit" [disabled]="loading()">
-            @if (loading()) { <mat-spinner diameter="20" /> } @else { Sign in }
+            {{ loading() ? 'Signing in…' : 'Sign in' }}
           </button>
         </form>
 

@@ -1,10 +1,9 @@
 import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-book-cover',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="book-cover-wrap" [style.aspect-ratio]="'2/3'" [style.width.px]="size()">
       @if (loaded() && !errored()) {

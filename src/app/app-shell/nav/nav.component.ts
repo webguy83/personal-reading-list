@@ -19,7 +19,7 @@ import { ConfirmDialogComponent, type ConfirmDialogData } from '../../shared/com
   template: `
     <div class="nav-wrapper" [class.nav--collapsed]="collapsed()">
 
-      <!-- ─── Brand header ───────────────────────────────────────────── -->
+
       <div class="nav-header">
         @if (!collapsed()) {
           <a routerLink="/library" class="brand">
@@ -35,9 +35,7 @@ import { ConfirmDialogComponent, type ConfirmDialogData } from '../../shared/com
 
       <mat-divider />
 
-      <!-- ─── Navigation ─────────────────────────────────────────────── -->
       @if (collapsed()) {
-        <!-- Icon-only buttons when collapsed -->
         <nav class="collapsed-nav" aria-label="Main navigation">
           @for (item of navItems; track item.path) {
             <a mat-icon-button
@@ -51,7 +49,6 @@ import { ConfirmDialogComponent, type ConfirmDialogData } from '../../shared/com
           }
         </nav>
       } @else {
-        <!-- Full nav list when expanded -->
         <mat-nav-list aria-label="Main navigation">
           @for (item of navItems; track item.path) {
             <a mat-list-item
@@ -70,7 +67,7 @@ import { ConfirmDialogComponent, type ConfirmDialogData } from '../../shared/com
 
       <mat-divider />
 
-      <!-- ─── Footer ─────────────────────────────────────────────────── -->
+
       <div class="nav-footer">
         @if (isGuest()) {
           @if (!collapsed()) {
@@ -148,8 +145,11 @@ import { ConfirmDialogComponent, type ConfirmDialogData } from '../../shared/com
     /* Active states */
     a.nav-icon--active mat-icon { color: var(--color-accent); }
     a.nav-item--active {
-      background: var(--color-accent-subtle) !important;
+      background: color-mix(in srgb, var(--color-accent) 22%, transparent) !important;
       color: var(--color-accent) !important;
+      --mat-list-list-item-focus-state-layer-opacity: 0;
+      --mat-list-list-item-hover-state-layer-opacity: 0;
+      --mat-list-list-item-pressed-state-layer-opacity: 0;
     }
     a.nav-item--active mat-icon { color: var(--color-accent); }
 

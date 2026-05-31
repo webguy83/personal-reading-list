@@ -27,7 +27,7 @@
 /* Applied via AccentButtonDirective (appAccentButton) on mat-flat-button     */
 .app-accent-btn {
   background: var(--color-accent) !important;
-  color: #ffffff !important;
+  color: var(--color-accent-foreground) !important;
 }
 
 /* ─── Base ────────────────────────────────────────────────────────────────── */
@@ -122,7 +122,7 @@ html:not(.dark) {
 
   --color-text-primary: #ede8e2;
   --color-text-secondary: #a89e94;
-  --color-text-tertiary: #7a716a;
+  --color-text-tertiary: #928a82;
 
   --color-accent: #d4964a;
   --color-accent-hover: #e0a85e;

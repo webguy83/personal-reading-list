@@ -7,7 +7,7 @@
     <p class="page-sub">Your reading story this year</p>
   </header>
 
-  <!-- ─── Reading Goal ─────────────────────────────────────────────────── -->
+
   @if (store.goalProgress(); as gp) {
     <mat-card class="goal-card" aria-labelledby="goal-heading">
       <mat-card-content>
@@ -74,9 +74,7 @@
     </mat-card>
   }
 
-  <!-- ─── Year stats ────────────────────────────────────────────────────── -->
   @if (store.yearStats(); as stats) {
-    <!-- Summary cards -->
     <div class="stat-cards">
         <mat-card class="stat-card">
           <mat-card-content class="stat-content">
@@ -104,7 +102,6 @@
         </mat-card>
     </div>
 
-    <!-- Reading by month -->
     @if (stats.booksByMonth && stats.totalBooks > 0) {
       <section class="detail-section" aria-labelledby="monthly-heading">
         <h2 id="monthly-heading" class="section-title">Books per month</h2>
@@ -119,7 +116,6 @@
       </section>
     }
 
-    <!-- Genre breakdown -->
     @if (stats.genreBreakdown && stats.totalBooks > 0) {
       <section class="detail-section" aria-labelledby="genre-heading">
         <h2 id="genre-heading" class="section-title">Genres</h2>
@@ -137,7 +133,6 @@
       </section>
     }
 
-    <!-- Highlights -->
     @if (stats.longestBook) {
       <section class="detail-section" aria-labelledby="highlights-heading">
         <h2 id="highlights-heading" class="section-title">Highlights</h2>
@@ -168,5 +163,5 @@
       <p class="empty-hint">Move books to your "Read" shelf to see your stats here.</p>
     </div>
   }
-  } <!-- end @else (not loading) -->
+  }
 </div>

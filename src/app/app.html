@@ -1,8 +1,6 @@
 @if (showShell()) {
-  <!-- --- Authenticated / Guest App Shell ----------------------------------- -->
   <mat-sidenav-container class="app-container">
 
-    <!-- Sidebar only on desktop -->
     @if (!isMobile()) {
       <mat-sidenav
         #sidenav
@@ -14,14 +12,12 @@
       </mat-sidenav>
     }
 
-    <!-- Main content area -->
     <mat-sidenav-content>
 
       <main class="main-content">
         <router-outlet />
       </main>
 
-      <!-- Mobile bottom navigation -->
       <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
         @for (item of mobileNavItems; track item.path) {
           <a
@@ -48,6 +44,6 @@
     </mat-sidenav-content>
   </mat-sidenav-container>
 } @else {
-  <!-- --- Public pages (landing, auth) � no shell ---------------------------- -->
+
   <router-outlet />
 }

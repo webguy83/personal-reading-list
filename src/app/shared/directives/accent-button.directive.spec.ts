@@ -31,17 +31,17 @@ describe('AccentButtonDirective', () => {
     expect(a.classList).toContain('app-accent-btn');
   });
 
-  it('should set --mat-button-filled-label-text-color to #ffffff inline', () => {
+  it('should set --mat-button-filled-label-text-color to accent-foreground token inline', () => {
     const fixture = TestBed.createComponent(TestHost);
     fixture.detectChanges();
     const btn = fixture.nativeElement.querySelector('button');
-    expect(btn.style.getPropertyValue('--mat-button-filled-label-text-color')).toBe('#ffffff');
+    expect(btn.style.getPropertyValue('--mat-button-filled-label-text-color')).toBe('var(--color-accent-foreground)');
   });
 
-  it('should set --mat-icon-color to #ffffff inline', () => {
+  it('should set --mat-icon-color to accent-foreground token inline', () => {
     const fixture = TestBed.createComponent(TestHost);
     fixture.detectChanges();
     const btn = fixture.nativeElement.querySelector('button');
-    expect(btn.style.getPropertyValue('--mat-icon-color')).toBe('#ffffff');
+    expect(btn.style.getPropertyValue('--mat-icon-color')).toBe('var(--color-accent-foreground)');
   });
 });

@@ -50,8 +50,8 @@ export class BookDetailComponent {
 
   readonly editingProgress = signal(false);
   readonly editingNotes = signal(false);
-  currentPageInput = signal<number>(0);
-  notesInput = signal('');
+  readonly currentPageInput = signal<number>(0);
+  readonly notesInput = signal('');
 
   startEditProgress(): void {
     this.currentPageInput.set(this.progress()?.currentPage ?? 0);

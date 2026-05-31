@@ -2,7 +2,7 @@
   @if (store.loading()) {
     <app-loading-spinner />
   } @else {
-  <!-- ─── Header ──────────────────────────────────────────────────────────── -->
+
   <header class="page-header">
     <div>
       <h1 class="page-title">My Library</h1>
@@ -14,7 +14,7 @@
     </a>
   </header>
 
-  <!-- ─── Reading Goal Banner ─────────────────────────────────────────────── -->
+
   @if (store.goalProgress(); as gp) {
     <mat-card class="goal-banner">
       <div class="goal-info">
@@ -48,7 +48,7 @@
     </mat-card>
   }
 
-  <!-- ─── Currently Reading ───────────────────────────────────────────────── -->
+
   @if (store.currentlyReading().length > 0) {
     <section class="shelf-section currently-reading-section" aria-labelledby="currently-reading-heading">
       <h2 id="currently-reading-heading" class="shelf-title">
@@ -86,7 +86,7 @@
     </section>
   }
 
-  <!-- ─── Shelves ──────────────────────────────────────────────────────────── -->
+
   @for (shelf of store.shelvesWithCounts(); track shelf.id) {
     @if (shelf.id !== 'currently-reading') {
       <section class="shelf-section" [attr.aria-labelledby]="'shelf-' + shelf.id">
@@ -125,5 +125,5 @@
       </section>
     }
   }
-  } <!-- end @else (not loading) -->
+  }
 </div>

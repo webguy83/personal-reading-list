@@ -4,7 +4,7 @@
     <p class="page-sub">Find books by title, author, or ISBN</p>
   </header>
 
-  <!-- ─── Search input ──────────────────────────────────────────────────── -->
+
   <div class="search-bar">
     <mat-icon class="search-icon">search</mat-icon>
     <input
@@ -26,7 +26,6 @@
     }
   </div>
 
-  <!-- ─── Results ───────────────────────────────────────────────────────── -->
   @if (results().length > 0) {
     <p class="results-count">{{ results().length }} results for your search</p>
 

@@ -58,9 +58,9 @@ import { MatIconModule } from '@angular/material/icon';
   `],
 })
 export class StarRatingComponent {
-  rating = input<number | null>(null);
-  readonly = input<boolean>(false);
-  rateChange = output<number>();
+  readonly rating = input<number | null>(null);
+  readonly readonly = input<boolean>(false);
+  readonly rateChange = output<number>();
 
   protected readonly stars = [1, 2, 3, 4, 5];
   private readonly hovered = signal<number | null>(null);

@@ -2,9 +2,6 @@ import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/cor
 import { TitleCasePipe, KeyValuePipe, DecimalPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { LibraryStore } from '../../core/stores/library.store';
 import { AccentButtonDirective } from '../../shared/directives/accent-button.directive';
@@ -13,7 +10,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
 @Component({
   selector: 'app-year-in-review',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TitleCasePipe, KeyValuePipe, DecimalPipe, MatIconModule, MatButtonModule, MatFormFieldModule, MatInputModule, FormsModule, MatCardModule, AccentButtonDirective, LoadingSpinnerComponent],
+  imports: [TitleCasePipe, KeyValuePipe, DecimalPipe, MatIconModule, MatButtonModule, MatCardModule, AccentButtonDirective, LoadingSpinnerComponent],
   templateUrl: './year-in-review.html',
   styleUrl: './year-in-review.css',
 })
@@ -34,7 +31,6 @@ export class YearInReviewComponent {
   }
 
   monthAbbr(monthKey: string): string {
-    // monthKey expected as '1'–'12' or 'Jan'–'Dec'
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const n = parseInt(monthKey, 10);
     return isNaN(n) ? monthKey.slice(0, 3) : (months[n - 1] ?? monthKey);

@@ -51,8 +51,8 @@ import { Component, input, ChangeDetectionStrategy } from '@angular/core';
   `],
 })
 export class ReadingProgressBarComponent {
-  percentage = input<number>(0);
-  currentPage = input<number | null>(null);
-  totalPages = input<number | null>(null);
-  showLabel = input<boolean>(true);
+  readonly percentage = input<number>(0);
+  readonly currentPage = input<number | null>(null);
+  readonly totalPages = input<number | null>(null);
+  readonly showLabel = input<boolean>(true);
 }

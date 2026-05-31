@@ -64,6 +64,7 @@ mat-sidenav {
 
 .mobile-nav-item--active {
   color: var(--color-accent);
-  background: var(--color-accent-subtle);
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
   cursor: default;
+  outline: none;
 }
