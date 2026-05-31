@@ -1,28 +1,21 @@
 @if (showShell()) {
-  <!-- ─── Authenticated / Guest App Shell ─────────────────────────────────── -->
+  <!-- --- Authenticated / Guest App Shell ----------------------------------- -->
   <mat-sidenav-container class="app-container">
 
-    <!-- Responsive sidenav: side mode on desktop, over (drawer) on mobile -->
-    <mat-sidenav
-      #sidenav
-      [mode]="isMobile() ? 'over' : 'side'"
-      [style.width]="navCollapsed() ? '4rem' : '15rem'"
-    >
-      <app-nav [(collapsed)]="navCollapsed" />
-    </mat-sidenav>
+    <!-- Sidebar only on desktop -->
+    @if (!isMobile()) {
+      <mat-sidenav
+        #sidenav
+        mode="side"
+        opened
+        [style.width]="navCollapsed() ? '4rem' : '15rem'"
+      >
+        <app-nav [(collapsed)]="navCollapsed" />
+      </mat-sidenav>
+    }
 
     <!-- Main content area -->
     <mat-sidenav-content>
-
-      <!-- Mobile top toolbar with hamburger toggle -->
-      @if (isMobile()) {
-        <mat-toolbar class="mobile-toolbar">
-          <button mat-icon-button (click)="sidenav.toggle()" aria-label="Open navigation">
-            <mat-icon>menu</mat-icon>
-          </button>
-          <span class="toolbar-brand">Bookshelf</span>
-        </mat-toolbar>
-      }
 
       <main class="main-content">
         <router-outlet />
@@ -40,11 +33,21 @@
             <span>{{ item.label }}</span>
           </a>
         }
+        <button class="mobile-nav-item" type="button" (click)="toggleTheme()" [attr.aria-label]="darkLabel()">
+          <mat-icon>{{ darkIcon() }}</mat-icon>
+          <span>Theme</span>
+        </button>
+        @if (isAuth() || isGuest()) {
+          <button class="mobile-nav-item" type="button" (click)="signOut()" aria-label="Sign out">
+            <mat-icon>logout</mat-icon>
+            <span>Sign out</span>
+          </button>
+        }
       </nav>
 
     </mat-sidenav-content>
   </mat-sidenav-container>
 } @else {
-  <!-- ─── Public pages (landing, auth) — no shell ──────────────────────────── -->
+  <!-- --- Public pages (landing, auth) � no shell ---------------------------- -->
   <router-outlet />
 }

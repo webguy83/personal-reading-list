@@ -17,7 +17,7 @@
       autocomplete="off"
     />
     @if (searching()) {
-      <mat-spinner diameter="20" class="search-spinner" />
+      <span class="search-spinner" aria-label="Searching" role="status"></span>
     }
     @if (query() && !searching()) {
       <button mat-icon-button class="clear-btn" (click)="clear()" aria-label="Clear search">
@@ -42,7 +42,7 @@
             }
           </div>
           @if (isInLibrary(book.apiId)) {
-            <span class="in-library-badge">In library</span>
+            <a mat-flat-button appAccentButton routerLink="/library" class="in-library-btn">In library</a>
           } @else {
             <button mat-icon-button [matMenuTriggerFor]="addMenu" class="add-btn" aria-label="Add to shelf">
               <mat-icon>add</mat-icon>

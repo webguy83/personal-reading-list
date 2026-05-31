@@ -48,6 +48,24 @@ test.describe('Landing page', () => {
     await expect(page).toHaveURL(/\/auth\/signup/);
   });
 
+  test('shows a theme toggle button', async ({ page }) => {
+    await expect(
+      page.getByRole('button', { name: /switch to (dark|light) mode/i }),
+    ).toBeVisible();
+  });
+
+  test('theme toggle switches between light and dark mode', async ({ page }) => {
+    // Set an explicit starting theme so toggle() goes light → dark → light
+    await page.evaluate(() => localStorage.setItem('bookshelf-theme', 'light'));
+    await page.reload();
+    const html = page.locator('html');
+    await expect(html).not.toHaveClass(/dark/);
+    await page.getByRole('button', { name: /switch to dark mode/i }).click();
+    await expect(html).toHaveClass(/dark/);
+    await page.getByRole('button', { name: /switch to light mode/i }).click();
+    await expect(html).not.toHaveClass(/dark/);
+  });
+
   test('unauthenticated navigation to /library redirects to landing', async ({ page }) => {
     await page.goto('/library');
     await expect(page).toHaveURL('/');

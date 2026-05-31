@@ -74,4 +74,15 @@ test.describe('Library page (guest mode)', () => {
       .click();
     await expect(page).toHaveURL(/\/year-in-review/);
   });
+
+  test('sign out button is visible in the nav', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /sign out/i })).toBeVisible();
+  });
+
+  test('clicking sign out navigates back to the landing page', async ({ page }) => {
+    await page.getByRole('button', { name: /sign out/i }).click();
+    const dialog = page.getByRole('dialog', { name: /sign out/i });
+    await dialog.getByRole('button', { name: 'Sign out', exact: true }).click();
+    await expect(page).toHaveURL('/');
+  });
 });

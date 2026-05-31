@@ -14,6 +14,7 @@ describe('LibraryComponent', () => {
   const mockShelvesWithCounts = signal<unknown[]>([SHELF_WANT, SHELF_READ]);
 
   const mockStore = {
+    loading: signal(false),
     books: mockBooks,
     goalProgress: mockGoalProgress,
     currentlyReading: mockCurrentlyReading,
@@ -104,10 +105,13 @@ describe('LibraryComponent', () => {
     expect(shelves.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('does not show goal banner when goalProgress is null', () => {
+  it('shows empty goal banner with set-a-goal link when goalProgress is null', () => {
     const fixture = TestBed.createComponent(LibraryComponent);
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.goal-banner')).toBeNull();
+    const banner = fixture.nativeElement.querySelector('.goal-banner');
+    expect(banner).toBeTruthy();
+    expect(banner.classList).toContain('goal-banner--empty');
+    expect(fixture.nativeElement.querySelector('.goal-set-link')).toBeTruthy();
   });
 
   it('shows goal banner when goalProgress is set', () => {

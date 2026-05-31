@@ -13,6 +13,7 @@
   --color-accent: #a8612b;
   --color-accent-hover: #8b4f20;
   --color-accent-subtle: #fbf1e8;
+  --color-accent-foreground: #ffffff; /* text/icons on accent bg — light mode: 4.75:1 ✓ */
 
   --color-success: #3d7c4f;
   --color-warning: #b8860b;
@@ -91,6 +92,7 @@
     --color-accent: #d4964a;
     --color-accent-hover: #e0a85e;
     --color-accent-subtle: #2e2218;
+    --color-accent-foreground: #1a1512; /* text/icons on accent bg — dark mode: 7.75:1 ✓ */
 
     --color-success: #5aaf6e;
     --color-warning: #d4a03e;

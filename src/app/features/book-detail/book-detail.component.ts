@@ -1,8 +1,9 @@
 import { Component, inject, computed, signal, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
@@ -10,19 +11,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { LibraryStore } from '../../core/stores/library.store';
 import { BookCoverComponent } from '../../shared/components/book-cover/book-cover.component';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { StarRatingComponent } from '../../shared/components/star-rating/star-rating.component';
+import { AccentButtonDirective } from '../../shared/directives/accent-button.directive';
 import { ReadingProgressBarComponent } from '../../shared/components/reading-progress-bar/reading-progress-bar.component';
 
 @Component({
   selector: 'app-book-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MatButtonModule, MatIconModule, MatMenuModule, MatInputModule, MatFormFieldModule, FormsModule, BookCoverComponent, StarRatingComponent, ReadingProgressBarComponent],
+  imports: [RouterLink, MatButtonModule, MatIconModule, MatMenuModule, MatInputModule, MatFormFieldModule, FormsModule, BookCoverComponent, StarRatingComponent, ReadingProgressBarComponent, AccentButtonDirective],
   templateUrl: './book-detail.html',
   styleUrl: './book-detail.css',
 })
 export class BookDetailComponent {
   readonly store = inject(LibraryStore);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
 
   private readonly bookId = toSignal(
     this.route.paramMap.pipe(map(p => p.get('bookId') ?? '')),
@@ -85,8 +90,18 @@ export class BookDetailComponent {
   deleteBook(): void {
     const book = this.book();
     if (!book) return;
-    if (confirm(`Remove "${book.title}" from your library?`)) {
-      this.store.deleteBook(book.id);
-    }
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Remove book',
+        message: `Remove "${book.title}" from your library?`,
+        confirmLabel: 'Remove',
+      },
+    });
+    ref.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.store.deleteBook(book.id);
+        this.router.navigate(['/library']);
+      }
+    });
   }
 }

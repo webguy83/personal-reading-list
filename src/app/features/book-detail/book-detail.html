@@ -79,7 +79,7 @@
               aria-label="Current page"
             />
             <span class="page-of">/ {{ b.pageCount ?? '?' }}</span>
-            <button mat-flat-button class="save-btn" (click)="saveProgress()">Save</button>
+            <button mat-flat-button appAccentButton class="save-btn" (click)="saveProgress()">Save</button>
             <button mat-button (click)="editingProgress.set(false)">Cancel</button>
           </div>
         } @else if (progress()) {
@@ -115,7 +115,7 @@
             aria-label="Notes"
           ></textarea>
           <div class="notes-actions">
-            <button mat-flat-button class="save-btn" (click)="saveNotes()">Save</button>
+            <button mat-flat-button appAccentButton class="save-btn" (click)="saveNotes()">Save</button>
             <button mat-button (click)="editingNotes.set(false)">Cancel</button>
           </div>
         </div>

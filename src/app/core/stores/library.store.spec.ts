@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection, signal } from '@angular/core';
-import { EMPTY } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { LibraryStore } from './library.store';
 import { AuthService } from '../auth/auth.service';
 import { LibraryService } from '../services/library.service';
@@ -67,6 +67,7 @@ const mockLibrarySvc = {
   deleteBook: async () => {},
   updateProgress: async () => {},
   setGoal: async () => {},
+  initDefaultShelves: vi.fn().mockResolvedValue(undefined),
 };
 
 function buildTestBed() {
@@ -431,6 +432,55 @@ describe('LibraryStore', () => {
       ]);
       expect(store.booksOnShelf('read')().length).toBe(2);
       expect(store.booksOnShelf('want-to-read')().length).toBe(1);
+    });
+  });
+
+  // ─── Firestore shelves initialization ──────────────────────────────────────
+
+  describe('loadFirestoreData — shelves initialization', () => {
+    function buildWithUidAndShelves(shelvesObservable: ReturnType<typeof of>, initDefaultShelves = vi.fn().mockResolvedValue(undefined)) {
+      const mockAuth = {
+        currentUid: signal<string | null>('user-123'),
+        isGuest: signal(false),
+      };
+      const customSvc = { ...mockLibrarySvc, shelves$: () => shelvesObservable, initDefaultShelves };
+
+      TestBed.configureTestingModule({
+        providers: [
+          provideZonelessChangeDetection(),
+          LibraryStore,
+          GuestService,
+          { provide: AuthService, useValue: mockAuth },
+          { provide: LibraryService, useValue: customSvc },
+        ],
+      });
+
+      const store = TestBed.inject(LibraryStore);
+      TestBed.flushEffects();
+      return { store, initDefaultShelves };
+    }
+
+    it('shows default shelves immediately when Firestore returns empty', () => {
+      const { store } = buildWithUidAndShelves(of([]));
+      expect(store.shelvesWithCounts().length).toBe(DEFAULT_SHELVES.length);
+      expect(store.shelvesWithCounts().map(s => s.id)).toEqual(DEFAULT_SHELVES.map(s => s.id));
+    });
+
+    it('calls initDefaultShelves with the user uid when shelves are empty', () => {
+      const { initDefaultShelves } = buildWithUidAndShelves(of([]));
+      expect(initDefaultShelves).toHaveBeenCalledWith('user-123');
+    });
+
+    it('does NOT call initDefaultShelves when shelves already exist', () => {
+      const existing = [DEFAULT_SHELVES[0]];
+      const { initDefaultShelves } = buildWithUidAndShelves(of(existing));
+      expect(initDefaultShelves).not.toHaveBeenCalled();
+    });
+
+    it('uses shelves from Firestore when they already exist', () => {
+      const existing = DEFAULT_SHELVES.map(s => ({ ...s }));
+      const { store } = buildWithUidAndShelves(of(existing));
+      expect(store.shelvesWithCounts().length).toBe(DEFAULT_SHELVES.length);
     });
   });
 });

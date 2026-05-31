@@ -150,8 +150,7 @@
 }
 
 .save-btn {
-  background: var(--color-accent) !important;
-  color: #fff !important;
+  /* layout only – colour/tokens handled by appAccentButton directive */
 }
 
 /* ─── Notes ───────────────────────────────────────────────────────────────── */

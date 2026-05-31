@@ -4,10 +4,12 @@
 /* ─── Angular Material M3 token overrides ─────────────────────────────────── */
 :root {
   --mat-sys-primary: var(--color-accent);
-  --mat-sys-on-primary: #fff;
+  --mat-sys-on-primary: var(--color-accent-foreground);
   --mat-sys-primary-container: var(--color-accent-subtle);
   --mat-sys-surface: var(--color-surface);
   --mat-sys-surface-container: var(--color-bg-secondary);
+  --mat-sys-surface-container-low: var(--color-bg-secondary);
+  --mat-sys-surface-container-lowest: var(--color-bg-primary);
   --mat-sys-surface-container-high: var(--color-bg-tertiary);
   --mat-sys-on-surface: var(--color-text-primary);
   --mat-sys-on-surface-variant: var(--color-text-secondary);
@@ -19,6 +21,13 @@
   --mat-sys-secondary: var(--color-text-secondary);
   --mat-sys-on-secondary: var(--color-bg-primary);
   --mat-icon-color: var(--color-text-secondary);
+}
+
+/* ─── Accent button ──────────────────────────────────────────────────────── */
+/* Applied via AccentButtonDirective (appAccentButton) on mat-flat-button     */
+.app-accent-btn {
+  background: var(--color-accent) !important;
+  color: #ffffff !important;
 }
 
 /* ─── Base ────────────────────────────────────────────────────────────────── */

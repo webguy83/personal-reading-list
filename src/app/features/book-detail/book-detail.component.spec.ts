@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection, signal } from '@angular/core';
-import { provideRouter, ActivatedRoute, convertToParamMap } from '@angular/router';
+import { provideRouter, ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { of } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 import { BookDetailComponent } from './book-detail.component';
 import { LibraryStore } from '../../core/stores/library.store';
 
@@ -28,6 +29,10 @@ const BOOK = {
 
 const SHELF = { id: 'currently-reading', name: 'Currently Reading', isDefault: true, position: 1, bookCount: 1 };
 
+const mockDialogRef = { afterClosed: () => of(true) };
+const mockDialog = { open: vi.fn().mockReturnValue(mockDialogRef) };
+const mockRouter = { navigate: vi.fn() };
+
 describe('BookDetailComponent', () => {
   const mockBooksSignal = signal<unknown[]>([BOOK]);
   const mockProgressSignal = signal<Record<string, unknown>>({});
@@ -50,6 +55,8 @@ describe('BookDetailComponent', () => {
         provideZonelessChangeDetection(),
         provideRouter([]),
         { provide: LibraryStore, useValue: mockStore },
+        { provide: MatDialog, useValue: mockDialog },
+        { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
           useValue: { paramMap: of(convertToParamMap({ bookId: 'book-1' })) },
@@ -59,6 +66,8 @@ describe('BookDetailComponent', () => {
     mockBooksSignal.set([BOOK]);
     mockProgressSignal.set({});
     vi.clearAllMocks();
+    mockDialog.open.mockReturnValue(mockDialogRef);
+    mockRouter.navigate.mockClear();
   });
 
   afterEach(() => TestBed.resetTestingModule());
@@ -159,5 +168,62 @@ describe('BookDetailComponent', () => {
     const fixture = TestBed.createComponent(BookDetailComponent);
     fixture.detectChanges();
     expect(fixture.componentInstance.shelfName()).toBe('Currently Reading');
+  });
+
+  // ─── deleteBook ───────────────────────────────────────────────────────────
+
+  it('deleteBook() opens a MatDialog', () => {
+    const fixture = TestBed.createComponent(BookDetailComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.deleteBook();
+    expect(mockDialog.open).toHaveBeenCalledOnce();
+  });
+
+  it('deleteBook() passes the book title in the dialog message', () => {
+    const fixture = TestBed.createComponent(BookDetailComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.deleteBook();
+    const [, options] = mockDialog.open.mock.calls[0];
+    expect(options.data.message).toContain('Dune');
+  });
+
+  it('deleteBook() calls store.deleteBook when dialog confirms', () => {
+    mockDialog.open.mockReturnValue({ afterClosed: () => of(true) });
+    const fixture = TestBed.createComponent(BookDetailComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.deleteBook();
+    expect(mockStore.deleteBook).toHaveBeenCalledWith('book-1');
+  });
+
+  it('deleteBook() does NOT call store.deleteBook when dialog is cancelled', () => {
+    mockDialog.open.mockReturnValue({ afterClosed: () => of(false) });
+    const fixture = TestBed.createComponent(BookDetailComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.deleteBook();
+    expect(mockStore.deleteBook).not.toHaveBeenCalled();
+  });
+
+  it('deleteBook() does nothing when book() is undefined', () => {
+    mockBooksSignal.set([]);
+    const fixture = TestBed.createComponent(BookDetailComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.deleteBook();
+    expect(mockDialog.open).not.toHaveBeenCalled();
+  });
+
+  it('deleteBook() navigates to /library when dialog confirms', () => {
+    mockDialog.open.mockReturnValue({ afterClosed: () => of(true) });
+    const fixture = TestBed.createComponent(BookDetailComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.deleteBook();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/library']);
+  });
+
+  it('deleteBook() does NOT navigate when dialog is cancelled', () => {
+    mockDialog.open.mockReturnValue({ afterClosed: () => of(false) });
+    const fixture = TestBed.createComponent(BookDetailComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.deleteBook();
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 });

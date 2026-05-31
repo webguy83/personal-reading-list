@@ -7,11 +7,13 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { LibraryStore } from '../../core/stores/library.store';
+import { AccentButtonDirective } from '../../shared/directives/accent-button.directive';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-year-in-review',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TitleCasePipe, KeyValuePipe, DecimalPipe, MatIconModule, MatButtonModule, MatFormFieldModule, MatInputModule, FormsModule, MatCardModule],
+  imports: [TitleCasePipe, KeyValuePipe, DecimalPipe, MatIconModule, MatButtonModule, MatFormFieldModule, MatInputModule, FormsModule, MatCardModule, AccentButtonDirective, LoadingSpinnerComponent],
   templateUrl: './year-in-review.html',
   styleUrl: './year-in-review.css',
 })

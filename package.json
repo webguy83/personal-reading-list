@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "env:setup": "node scripts/set-env.js",
+    "prestart": "node scripts/set-env.js",
     "start": "ng serve",
+    "prebuild": "node scripts/set-env.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "vitest run",
@@ -36,6 +39,7 @@
     "@angular/compiler-cli": "^21.2.0",
     "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4.1.12",
+    "dotenv": "^17.4.2",
     "jsdom": "^28.0.0",
     "postcss": "^8.5.3",
     "prettier": "^3.8.1",

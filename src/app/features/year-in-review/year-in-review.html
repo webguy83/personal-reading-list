@@ -1,4 +1,7 @@
 <div class="yir-page">
+  @if (store.loading()) {
+    <app-loading-spinner />
+  } @else {
   <header class="page-header">
     <h1 class="page-title">{{ currentYear }} in Review</h1>
     <p class="page-sub">Your reading story this year</p>
@@ -29,7 +32,7 @@
             aria-label="Book goal"
           />
           <span class="goal-input-label">books</span>
-          <button mat-flat-button class="save-btn" (click)="saveGoal()">Save</button>
+          <button mat-flat-button appAccentButton class="save-btn" (click)="saveGoal()">Save</button>
           <button mat-button (click)="editingGoal.set(false)">Cancel</button>
         </div>
       }
@@ -46,6 +49,29 @@
       </div>
       </mat-card-content>
     </mat-card>
+  } @else {
+    <mat-card class="goal-card" aria-labelledby="goal-heading">
+      <mat-card-content>
+        <div class="goal-header">
+          <div>
+            <h2 id="goal-heading" class="card-title">Reading Goal</h2>
+            <p class="card-sub">Set a target number of books to read this year</p>
+          </div>
+        </div>
+        <div class="goal-edit">
+          <input
+            type="number"
+            class="goal-input"
+            [value]="goalInput()"
+            (input)="goalInput.set(+$any($event.target).value)"
+            min="1" max="365"
+            aria-label="Book goal"
+          />
+          <span class="goal-input-label">books in {{ currentYear }}</span>
+          <button mat-flat-button appAccentButton class="save-btn" (click)="saveGoal()">Set goal</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
   }
 
   <!-- ─── Year stats ────────────────────────────────────────────────────── -->
@@ -53,25 +79,25 @@
     <!-- Summary cards -->
     <div class="stat-cards">
         <mat-card class="stat-card">
-          <mat-card-content>
+          <mat-card-content class="stat-content">
             <span class="stat-value">{{ stats.totalBooks }}</span>
             <span class="stat-label">Books read</span>
           </mat-card-content>
         </mat-card>
         <mat-card class="stat-card">
-          <mat-card-content>
+          <mat-card-content class="stat-content">
             <span class="stat-value">{{ stats.totalPages | number }}</span>
             <span class="stat-label">Pages read</span>
           </mat-card-content>
         </mat-card>
         <mat-card class="stat-card">
-          <mat-card-content>
+          <mat-card-content class="stat-content">
             <span class="stat-value">{{ stats.averageRating?.toFixed(1) ?? '—' }}</span>
             <span class="stat-label">Avg rating</span>
           </mat-card-content>
         </mat-card>
         <mat-card class="stat-card">
-          <mat-card-content>
+          <mat-card-content class="stat-content">
             <span class="stat-value">{{ stats.topGenre ?? '—' }}</span>
             <span class="stat-label">Top genre</span>
           </mat-card-content>
@@ -142,4 +168,5 @@
       <p class="empty-hint">Move books to your "Read" shelf to see your stats here.</p>
     </div>
   }
+  } <!-- end @else (not loading) -->
 </div>

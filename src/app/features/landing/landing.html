@@ -6,8 +6,11 @@
       <span>Bookshelf</span>
     </a>
     <div class="header-actions">
+      <button mat-icon-button (click)="theme.toggle()" [attr.aria-label]="darkLabel()">
+        <mat-icon>{{ darkIcon() }}</mat-icon>
+      </button>
       <a mat-button routerLink="/auth/login">Sign in</a>
-      <a mat-flat-button routerLink="/auth/signup" class="btn-primary">Sign Up Free</a>
+      <a mat-flat-button appAccentButton routerLink="/auth/signup" class="btn-primary">Sign Up Free</a>
     </div>
   </header>
 
@@ -20,7 +23,7 @@
         explore your reading year — all in one quiet, personal space.
       </p>
       <div class="hero-ctas">
-        <a mat-flat-button routerLink="/auth/signup" class="btn-primary btn-large">
+        <a mat-flat-button appAccentButton routerLink="/auth/signup" class="btn-primary btn-large">
           <mat-icon>person_add</mat-icon>
           Start for free
         </a>
@@ -64,7 +67,7 @@
     <div class="final-cta-content">
       <h2 class="final-cta-heading">Ready to start your reading journey?</h2>
       <div class="final-cta-btns">
-        <a mat-flat-button routerLink="/auth/signup" class="btn-primary btn-large">Create free account</a>
+        <a mat-flat-button appAccentButton routerLink="/auth/signup" class="btn-primary btn-large">Create free account</a>
         <button mat-button class="btn-ghost" (click)="enterGuest()">Explore as guest →</button>
       </div>
     </div>

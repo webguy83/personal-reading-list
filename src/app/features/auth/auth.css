@@ -86,8 +86,6 @@
 .auth-submit {
   width: 100%;
   margin-top: 0.5rem;
-  background: var(--color-accent) !important;
-  color: #fff !important;
   font-size: var(--text-sm) !important;
   padding: 0.625rem 0 !important;
   height: auto !important;

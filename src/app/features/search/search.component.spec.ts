@@ -125,4 +125,30 @@ describe('SearchComponent', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.no-results')).toBeTruthy();
   });
+
+  it('shows in-library button linking to /library when book is already in library', () => {
+    mockStore.isBookInLibrary.mockReturnValue(true);
+    const fixture = TestBed.createComponent(SearchComponent);
+    fixture.detectChanges();
+    TestBed.flushEffects();
+    const comp = fixture.componentInstance;
+    comp.query.set('dune');
+    comp.results.set([{ apiId: 'ol-1', title: 'Dune', authors: ['F Herbert'], coverUrl: null }]);
+    fixture.detectChanges();
+    const btn: HTMLAnchorElement = fixture.nativeElement.querySelector('.in-library-btn');
+    expect(btn).toBeTruthy();
+    expect(btn.getAttribute('href')).toBe('/library');
+  });
+
+  it('does not show in-library button when book is not in library', () => {
+    mockStore.isBookInLibrary.mockReturnValue(false);
+    const fixture = TestBed.createComponent(SearchComponent);
+    fixture.detectChanges();
+    TestBed.flushEffects();
+    const comp = fixture.componentInstance;
+    comp.query.set('dune');
+    comp.results.set([{ apiId: 'ol-1', title: 'Dune', authors: ['F Herbert'], coverUrl: null }]);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.in-library-btn')).toBeNull();
+  });
 });

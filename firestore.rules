@@ -1,0 +1,49 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ──────────────────────────────────────────────────────
+
+    // True when the request is from a signed-in user.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // True when the signed-in user owns the resource.
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ── User data ─────────────────────────────────────────────────────────────
+    // All sub-collections live under /users/{userId}/…
+    // Only the owner can read or write their own data.
+
+    match /users/{userId}/{document=**} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Explicit sub-collection rules for clarity (inherited from the wildcard above).
+
+    match /users/{userId}/books/{bookId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    match /users/{userId}/shelves/{shelfId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    match /users/{userId}/progress/{progressId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    match /users/{userId}/goals/{goalId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // ── Deny everything else ──────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

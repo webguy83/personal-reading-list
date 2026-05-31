@@ -197,8 +197,28 @@ export class LibraryStore implements OnDestroy {
     // Subscribe to real-time Firestore streams
     this.subs.forEach(s => s.unsubscribe());
     this.subs = [
-      this.svc.books$(uid).subscribe({ next: books => this._books.set(books), error: () => this._error.set('Failed to load books') }),
-      this.svc.shelves$(uid).subscribe({ next: shelves => this._shelves.set(shelves), error: () => {} }),
+      this.svc.books$(uid).subscribe({
+        next: books => {
+          this._books.set(books);
+          this._loading.set(false);
+        },
+        error: () => {
+          this._error.set('Failed to load books');
+          this._loading.set(false);
+        },
+      }),
+      this.svc.shelves$(uid).subscribe({
+        next: shelves => {
+          if (shelves.length === 0) {
+            // First sign-in — show defaults immediately and persist to Firestore.
+            this._shelves.set([...DEFAULT_SHELVES]);
+            this.svc.initDefaultShelves(uid);
+          } else {
+            this._shelves.set(shelves);
+          }
+        },
+        error: () => {},
+      }),
       this.svc.progress$(uid).subscribe({
         next: progressList => {
           const map: Record<string, ReadingProgress> = {};
@@ -209,7 +229,6 @@ export class LibraryStore implements OnDestroy {
       }),
       this.svc.goal$(uid, new Date().getFullYear()).subscribe({ next: goal => this._goal.set(goal), error: () => {} }),
     ];
-    this._loading.set(false);
   }
 
   private clearData(): void {

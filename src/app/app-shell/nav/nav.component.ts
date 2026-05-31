@@ -3,28 +3,30 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatDivider } from '@angular/material/divider';
+import { MatDialog } from '@angular/material/dialog';
+import { filter, switchMap } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { LibraryStore } from '../../core/stores/library.store';
+import { ConfirmDialogComponent, type ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-nav',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, MatIconModule, MatButtonModule, MatTooltip, MatMenuModule, MatListModule, MatDivider],
+  imports: [RouterLink, RouterLinkActive, MatIconModule, MatButtonModule, MatTooltip, MatListModule, MatDivider],
   template: `
     <div class="nav-wrapper" [class.nav--collapsed]="collapsed()">
 
       <!-- ─── Brand header ───────────────────────────────────────────── -->
       <div class="nav-header">
-        <a routerLink="/library" class="brand" [matTooltip]="collapsed() ? 'Bookshelf' : ''" matTooltipPosition="right">
-          <mat-icon class="brand-icon">auto_stories</mat-icon>
-          @if (!collapsed()) {
+        @if (!collapsed()) {
+          <a routerLink="/library" class="brand">
+            <mat-icon class="brand-icon">auto_stories</mat-icon>
             <span class="brand-name">Bookshelf</span>
-          }
-        </a>
+          </a>
+        }
         <button mat-icon-button class="collapse-btn" (click)="collapsed.update(v => !v)"
           [matTooltip]="collapsed() ? 'Expand sidebar' : 'Collapse sidebar'" matTooltipPosition="right">
           <mat-icon>{{ collapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
@@ -83,17 +85,12 @@ import { LibraryStore } from '../../core/stores/library.store';
           <button mat-icon-button (click)="theme.toggle()" [attr.aria-label]="darkLabel()">
             <mat-icon>{{ darkIcon() }}</mat-icon>
           </button>
-          @if (isAuth()) {
-            <button mat-icon-button [matMenuTriggerFor]="userMenu"
-              [matTooltip]="collapsed() ? 'Account' : ''" matTooltipPosition="right">
-              <mat-icon>account_circle</mat-icon>
+          @if (isAuth() || isGuest()) {
+            <button mat-icon-button (click)="signOut()"
+              aria-label="Sign out"
+              matTooltip="Sign out" matTooltipPosition="right">
+              <mat-icon>logout</mat-icon>
             </button>
-            <mat-menu #userMenu="matMenu">
-              <button mat-menu-item (click)="signOut()">
-                <mat-icon>logout</mat-icon>
-                <span>Sign out</span>
-              </button>
-            </mat-menu>
           }
         </div>
       </div>
@@ -188,6 +185,7 @@ export class NavComponent {
   protected readonly auth = inject(AuthService);
   protected readonly theme = inject(ThemeService);
   private readonly store = inject(LibraryStore);
+  private readonly dialog = inject(MatDialog);
 
   protected readonly isGuest = this.auth.isGuest;
   protected readonly isAuth = this.auth.isAuthenticated;
@@ -205,6 +203,16 @@ export class NavComponent {
   ];
 
   protected signOut(): void {
-    this.auth.signOut().subscribe();
+    this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
+      data: {
+        title: 'Sign out',
+        message: 'Are you sure you want to sign out?',
+        confirmLabel: 'Sign out',
+        cancelLabel: 'Cancel',
+      },
+    }).afterClosed().pipe(
+      filter(Boolean),
+      switchMap(() => this.auth.signOut()),
+    ).subscribe();
   }
 }

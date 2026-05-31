@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../core/auth/auth.service';
+import { AccentButtonDirective } from '../../shared/directives/accent-button.directive';
 
 function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   const pw = control.get('password')?.value;
@@ -17,7 +18,7 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-signup',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, MatProgressSpinnerModule, AccentButtonDirective],
   template: `
     <div class="auth-page">
       <div class="auth-card">
@@ -61,7 +62,7 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
             }
           </mat-form-field>
 
-          <button mat-flat-button type="submit" class="auth-submit" [disabled]="loading()">
+          <button mat-flat-button appAccentButton type="submit" class="auth-submit" [disabled]="loading()">
             @if (loading()) { <mat-spinner diameter="20" /> } @else { Create account }
           </button>
         </form>

@@ -2,11 +2,12 @@ import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import { AccentButtonDirective } from '../../directives/accent-button.directive';
 
 @Component({
   selector: 'app-empty-state',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatIconModule, MatButtonModule, RouterLink],
+  imports: [MatIconModule, MatButtonModule, RouterLink, AccentButtonDirective],
   template: `
     <div class="empty-state">
       <div class="empty-icon">
@@ -15,7 +16,7 @@ import { RouterLink } from '@angular/router';
       <h3 class="empty-title">{{ title() }}</h3>
       <p class="empty-message">{{ message() }}</p>
       @if (actionLabel() && actionRoute()) {
-        <a mat-flat-button [routerLink]="actionRoute()" class="empty-action">
+        <a mat-flat-button appAccentButton [routerLink]="actionRoute()" class="empty-action">
           {{ actionLabel() }}
         </a>
       }
@@ -61,8 +62,6 @@ import { RouterLink } from '@angular/router';
     }
     .empty-action {
       margin-top: var(--space-2);
-      background: var(--color-accent) !important;
-      color: #fff !important;
     }
   `],
 })

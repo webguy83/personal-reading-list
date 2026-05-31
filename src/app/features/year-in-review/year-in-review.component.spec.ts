@@ -21,6 +21,7 @@ describe('YearInReviewComponent', () => {
   const mockYearStats = signal<unknown>(null);
 
   const mockStore = {
+    loading: signal(false),
     goalProgress: mockGoalProgress,
     yearStats: mockYearStats,
     setGoal: vi.fn().mockResolvedValue(undefined),
@@ -56,10 +57,13 @@ describe('YearInReviewComponent', () => {
     expect(heading).toContain('in Review');
   });
 
-  it('hides goal card when goalProgress is null', () => {
+  it('shows goal-setting card when goalProgress is null', () => {
     const fixture = TestBed.createComponent(YearInReviewComponent);
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.goal-card')).toBeNull();
+    const card = fixture.nativeElement.querySelector('.goal-card');
+    expect(card).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('.goal-edit')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('[aria-label="Book goal"]')).toBeTruthy();
   });
 
   it('shows goal card when goalProgress is set', () => {

@@ -7,11 +7,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../core/auth/auth.service';
+import { AccentButtonDirective } from '../../shared/directives/accent-button.directive';
 
 @Component({
   selector: 'app-reset-password',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatFormFieldModule, MatInputModule, MatIconModule, MatProgressSpinnerModule, AccentButtonDirective],
   template: `
     <div class="auth-page">
       <div class="auth-card">
@@ -28,7 +29,7 @@ import { AuthService } from '../../core/auth/auth.service';
               We sent a password reset link to <strong>{{ sentEmail() }}</strong>.
               Check your spam folder if you don't see it.
             </p>
-            <a mat-flat-button routerLink="/auth/login" class="auth-submit">Back to sign in</a>
+            <a mat-flat-button appAccentButton routerLink="/auth/login" class="auth-submit">Back to sign in</a>
           </div>
         } @else {
           <h1 class="auth-title">Reset your password</h1>
@@ -47,7 +48,7 @@ import { AuthService } from '../../core/auth/auth.service';
               }
             </mat-form-field>
 
-            <button mat-flat-button type="submit" class="auth-submit" [disabled]="loading()">
+            <button mat-flat-button appAccentButton type="submit" class="auth-submit" [disabled]="loading()">
               @if (loading()) { <mat-spinner diameter="20" /> } @else { Send reset link }
             </button>
           </form>

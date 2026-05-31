@@ -1,21 +1,23 @@
-import { Component, inject, ChangeDetectionStrategy, signal, effect, viewChild } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
-import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, map, startWith } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map, startWith, switchMap } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { NavComponent } from './app-shell/nav/nav.component';
 import { ThemeService } from './core/services/theme.service';
+import { AuthService } from './core/auth/auth.service';
+import { ConfirmDialogComponent, type ConfirmDialogData } from './shared/components/confirm-dialog/confirm-dialog.component';
 
 const APP_PATHS = ['/library', '/search', '/year-in-review'];
 
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatIconModule, MatButtonModule, MatSidenavModule, MatToolbarModule, NavComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatIconModule, MatButtonModule, MatSidenavModule, NavComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -24,7 +26,13 @@ export class App {
   private readonly theme = inject(ThemeService);
   private readonly router = inject(Router);
   private readonly bp = inject(BreakpointObserver);
-  private readonly sidenavRef = viewChild<MatSidenav>('sidenav');
+  private readonly dialog = inject(MatDialog);
+  protected readonly auth = inject(AuthService);
+
+  protected readonly isAuth = this.auth.isAuthenticated;
+  protected readonly isGuest = this.auth.isGuest;
+  protected readonly darkIcon = computed(() => this.theme.isDark() ? 'light_mode' : 'dark_mode');
+  protected readonly darkLabel = computed(() => this.theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode');
 
   protected readonly isMobile = toSignal(
     this.bp.observe('(max-width: 767px)').pipe(map(r => r.matches)),
@@ -49,23 +57,17 @@ export class App {
     { path: '/year-in-review', icon: 'bar_chart', label: 'Stats' },
   ];
 
-  constructor() {
-    // On desktop: always keep sidenav open
-    effect(() => {
-      const sidenav = this.sidenavRef();
-      if (sidenav && !this.isMobile()) {
-        sidenav.open();
-      }
-    });
+  protected toggleTheme(): void {
+    this.theme.toggle();
+  }
 
-    // On mobile: close sidenav after navigating to a new route
-    this.router.events.pipe(
-      filter(e => e instanceof NavigationEnd),
-      takeUntilDestroyed(),
-    ).subscribe(() => {
-      if (this.isMobile()) {
-        this.sidenavRef()?.close();
-      }
-    });
+  protected signOut(): void {
+    this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, {
+      data: { title: 'Sign out', message: 'Are you sure you want to sign out?', confirmLabel: 'Sign out', cancelLabel: 'Cancel' },
+    }).afterClosed().pipe(
+      filter(Boolean),
+      switchMap(() => this.auth.signOut()),
+    ).subscribe();
   }
 }
+

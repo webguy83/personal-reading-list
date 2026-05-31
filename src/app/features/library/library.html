@@ -1,11 +1,14 @@
 <div class="library-page">
+  @if (store.loading()) {
+    <app-loading-spinner />
+  } @else {
   <!-- ─── Header ──────────────────────────────────────────────────────────── -->
   <header class="page-header">
     <div>
       <h1 class="page-title">My Library</h1>
       <p class="page-sub">{{ store.books().length }} books</p>
     </div>
-    <a mat-flat-button routerLink="/search" class="add-book-btn">
+    <a mat-flat-button appAccentButton routerLink="/search" class="add-book-btn">
       <mat-icon>add</mat-icon>
       Add book
     </a>
@@ -29,6 +32,19 @@
         </div>
         <span class="goal-pct" [class]="'goal-pace--' + gp.pace">{{ gp.percentage }}%</span>
       </div>
+    </mat-card>
+  } @else {
+    <mat-card class="goal-banner goal-banner--empty">
+      <div class="goal-info">
+        <mat-icon>emoji_events</mat-icon>
+        <div>
+          <p class="goal-label">{{ currentYear }} Reading Goal</p>
+          <p class="goal-stat">No goal set yet</p>
+        </div>
+      </div>
+      <a routerLink="/year-in-review" class="goal-set-link">
+        Set a goal <mat-icon>arrow_forward</mat-icon>
+      </a>
     </mat-card>
   }
 
@@ -109,4 +125,5 @@
       </section>
     }
   }
+  } <!-- end @else (not loading) -->
 </div>

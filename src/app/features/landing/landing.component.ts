@@ -1,18 +1,23 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../core/auth/auth.service';
+import { ThemeService } from '../../core/services/theme.service';
+import { AccentButtonDirective } from '../../shared/directives/accent-button.directive';
 
 @Component({
   selector: 'app-landing',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MatButtonModule, MatIconModule],
+  imports: [RouterLink, MatButtonModule, MatIconModule, AccentButtonDirective],
   templateUrl: './landing.html',
   styleUrl: './landing.css',
 })
 export class LandingComponent {
   private readonly auth = inject(AuthService);
+  readonly theme = inject(ThemeService);
+  readonly darkIcon = computed((): string => this.theme.isDark() ? 'light_mode' : 'dark_mode');
+  readonly darkLabel = computed((): string => this.theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode');
 
   enterGuest(): void {
     this.auth.enterGuestMode();

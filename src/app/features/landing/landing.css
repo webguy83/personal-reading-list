@@ -103,10 +103,6 @@
 }
 
 /* ─── Shared button styles ───────────────────────────────────────────────── */
-.btn-primary {
-  background: var(--color-accent) !important;
-  color: #fff !important;
-}
 .btn-primary:hover {
   background: var(--color-accent-hover) !important;
 }
@@ -283,6 +279,16 @@
 @media (max-width: 767px) {
   .landing-header {
     padding: 0.875rem 1rem;
+  }
+
+  /* Hide brand name, show icon only — frees ~80px on narrow screens */
+  .header-brand span {
+    display: none;
+  }
+
+  /* "Sign Up Free" in the header is redundant — the hero CTA is prominent */
+  .header-actions .btn-primary {
+    display: none;
   }
   .hero {
     flex-direction: column;

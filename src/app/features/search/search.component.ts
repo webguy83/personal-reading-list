@@ -5,18 +5,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RouterLink } from '@angular/router';
 import { BookApiService } from '../../core/services/book-api.service';
 import { LibraryStore } from '../../core/stores/library.store';
 import { BookCoverComponent } from '../../shared/components/book-cover/book-cover.component';
 import { SearchResult } from '../../shared/models';
+import { AccentButtonDirective } from '../../shared/directives/accent-button.directive';
 import { debounceTime, distinctUntilChanged, Subject, switchMap, catchError, of } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-search',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatMenuModule, MatProgressSpinnerModule, BookCoverComponent],
+  imports: [FormsModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatMenuModule, RouterLink, BookCoverComponent, AccentButtonDirective],
   templateUrl: './search.html',
   styleUrl: './search.css',
 })
