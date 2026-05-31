@@ -8,7 +8,7 @@
         opened
         [style.width]="navCollapsed() ? '4rem' : '15rem'"
       >
-        <app-nav [(collapsed)]="navCollapsed" />
+        <app-nav [(collapsed)]="navCollapsed" [activeUrl]="activeUrl()" />
       </mat-sidenav>
     }
 
@@ -23,7 +23,7 @@
           <a
             class="mobile-nav-item"
             [routerLink]="item.path"
-            routerLinkActive="mobile-nav-item--active"
+            [class.mobile-nav-item--active]="activeUrl().startsWith(item.path)"
           >
             <mat-icon>{{ item.icon }}</mat-icon>
             <span>{{ item.label }}</span>

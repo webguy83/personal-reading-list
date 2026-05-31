@@ -1,5 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
-import { Router, RouterOutlet, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd, NavigationStart, RouterLink, RouterLinkActive } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith, switchMap } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -17,7 +17,7 @@ const APP_PATHS = ['/library', '/search', '/year-in-review'];
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatIconModule, MatButtonModule, MatSidenavModule, NavComponent],
+  imports: [RouterOutlet, RouterLink, MatIconModule, MatButtonModule, MatSidenavModule, NavComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -49,6 +49,16 @@ export class App {
       startWith(false),
     ),
     { initialValue: false },
+  );
+
+  /** Tracks the destination URL immediately on NavigationStart so nav items
+   *  highlight without waiting for the lazy chunk to finish loading. */
+  protected readonly activeUrl = toSignal(
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationStart || e instanceof NavigationEnd),
+      map(e => e instanceof NavigationStart ? e.url : (e as NavigationEnd).urlAfterRedirects),
+    ),
+    { initialValue: this.router.url },
   );
 
   protected readonly mobileNavItems = [

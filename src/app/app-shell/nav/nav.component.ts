@@ -1,5 +1,5 @@
-import { Component, inject, computed, model, ChangeDetectionStrategy } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject, computed, model, input, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -15,7 +15,7 @@ import { ConfirmDialogComponent, type ConfirmDialogData } from '../../shared/com
 @Component({
   selector: 'app-nav',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, MatIconModule, MatButtonModule, MatTooltip, MatListModule, MatDivider],
+  imports: [RouterLink, MatIconModule, MatButtonModule, MatTooltip, MatListModule, MatDivider],
   template: `
     <div class="nav-wrapper" [class.nav--collapsed]="collapsed()">
 
@@ -40,8 +40,7 @@ import { ConfirmDialogComponent, type ConfirmDialogData } from '../../shared/com
           @for (item of navItems; track item.path) {
             <a mat-icon-button
               [routerLink]="item.path"
-              routerLinkActive="nav-icon--active"
-              [routerLinkActiveOptions]="{ exact: item.path === '/library' }"
+              [class.nav-icon--active]="activeUrl().startsWith(item.path)"
               [matTooltip]="item.label" matTooltipPosition="right"
             >
               <mat-icon>{{ item.icon }}</mat-icon>
@@ -53,8 +52,7 @@ import { ConfirmDialogComponent, type ConfirmDialogData } from '../../shared/com
           @for (item of navItems; track item.path) {
             <a mat-list-item
               [routerLink]="item.path"
-              routerLinkActive="nav-item--active"
-              [routerLinkActiveOptions]="{ exact: item.path === '/library' }"
+              [class.nav-item--active]="activeUrl().startsWith(item.path)"
             >
               <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
               <span matListItemTitle>{{ item.label }}</span>
@@ -192,6 +190,10 @@ export class NavComponent {
 
   /** Two-way bindable collapse state — parent (app shell) controls sidenav width */
   readonly collapsed = model(false);
+
+  /** Active URL passed down from the root app component, updated on NavigationStart
+   *  so the active item highlights immediately when the user clicks. */
+  readonly activeUrl = input<string>('');
 
   protected readonly darkLabel = computed((): string => this.theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode');
   protected readonly darkIcon = computed((): string => this.theme.isDark() ? 'light_mode' : 'dark_mode');
