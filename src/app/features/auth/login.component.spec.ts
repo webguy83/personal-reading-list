@@ -5,6 +5,9 @@ import { of, throwError } from 'rxjs';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../core/auth/auth.service';
 import { Auth } from '@angular/fire/auth';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { MatInputHarness } from '@angular/material/input/testing';
+import { MatButtonHarness } from '@angular/material/button/testing';
 
 describe('LoginComponent', () => {
   const mockAuth = {
@@ -118,15 +121,15 @@ describe('LoginComponent', () => {
     expect(mockAuth.enterGuestMode).toHaveBeenCalledTimes(1);
   });
 
-  it('showPw toggle changes input type', () => {
+  it('showPw toggle changes input type', async () => {
     const fixture = TestBed.createComponent(LoginComponent);
     fixture.detectChanges();
-    const comp = fixture.componentInstance;
-    expect(comp.showPw()).toBe(false);
-    comp.showPw.set(true);
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    const [, pwInput] = await loader.getAllHarnesses(MatInputHarness);
+    expect(await pwInput.getType()).toBe('password');
+    fixture.componentInstance.showPw.set(true);
     fixture.detectChanges();
-    const pwInput = fixture.nativeElement.querySelector('input[formControlName="password"]') as HTMLInputElement;
-    expect(pwInput.type).toBe('text');
+    expect(await pwInput.getType()).toBe('text');
   });
 
   it('shows "Welcome back" heading', () => {
@@ -135,9 +138,11 @@ describe('LoginComponent', () => {
     expect(fixture.nativeElement.querySelector('.auth-title').textContent.trim()).toBe('Welcome back');
   });
 
-  it('renders "Explore as guest" button', () => {
+  it('renders "Explore as guest" button', async () => {
     const fixture = TestBed.createComponent(LoginComponent);
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('Explore as guest');
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    const button = await loader.getHarness(MatButtonHarness.with({ text: /Explore as guest/i }));
+    expect(button).toBeTruthy();
   });
 });
