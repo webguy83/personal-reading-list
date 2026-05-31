@@ -22,11 +22,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class SearchComponent {
   private readonly api = inject(BookApiService);
-  protected readonly store = inject(LibraryStore);
+  readonly store = inject(LibraryStore);
 
-  protected readonly query = signal('');
-  protected readonly searching = signal(false);
-  protected readonly results = signal<SearchResult[]>([]);
+  readonly query = signal('');
+  readonly searching = signal(false);
+  readonly results = signal<SearchResult[]>([]);
 
   private readonly search$ = new Subject<string>();
 
@@ -51,23 +51,23 @@ export class SearchComponent {
     });
   }
 
-  protected onQueryChange(q: string): void {
+  onQueryChange(q: string): void {
     this.query.set(q);
     if (q.trim()) this.searching.set(true);
     this.search$.next(q);
   }
 
-  protected clear(): void {
+  clear(): void {
     this.query.set('');
     this.results.set([]);
     this.searching.set(false);
   }
 
-  protected addToShelf(result: SearchResult, shelfId: string): void {
+  addToShelf(result: SearchResult, shelfId: string): void {
     this.store.addBook(result, shelfId);
   }
 
-  protected isInLibrary(apiId: string): boolean {
+  isInLibrary(apiId: string): boolean {
     return this.store.isBookInLibrary(apiId);
   }
 }

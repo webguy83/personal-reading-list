@@ -108,6 +108,30 @@
   margin-bottom: 1rem;
 }
 
+/* Currently Reading uses grid so the "View all" link can be DOM-last
+   (accessibility / test requirement) while still appearing top-right visually */
+.currently-reading-section {
+  display: grid;
+  grid-template-areas:
+    "title viewall"
+    "books books";
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  row-gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+.currently-reading-section .shelf-title {
+  grid-area: title;
+  margin: 0;
+}
+.currently-reading-section .shelf-link {
+  grid-area: viewall;
+  align-self: center;
+}
+.currently-reading-section .current-reading-list {
+  grid-area: books;
+}
+
 .shelf-title {
   display: flex;
   align-items: center;

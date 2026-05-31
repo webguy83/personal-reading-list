@@ -88,6 +88,8 @@ test.describe('Book detail page', () => {
   test('moving to a different shelf updates the shelf badge', async ({ page }) => {
     await page.getByRole('button', { name: /move to shelf/i }).click();
     await page.getByRole('menuitem', { name: /^read$/i }).click();
+    // Wait for the mat-menu overlay to fully close before checking text that overlaps with menu items
+    await page.getByRole('menu').waitFor({ state: 'detached' });
     await expect(page.getByText('Read')).toBeVisible();
     // The progress section should no longer appear (book is no longer currently-reading)
     await expect(

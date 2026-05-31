@@ -14,11 +14,11 @@ import { AuthService } from '../../core/auth/auth.service';
 export class LandingComponent {
   private readonly auth = inject(AuthService);
 
-  protected enterGuest(): void {
+  enterGuest(): void {
     this.auth.enterGuestMode();
   }
 
-  protected readonly features = [
+  readonly features = [
     {
       icon: 'library_books',
       title: 'Your shelves, your way',
@@ -41,7 +41,7 @@ export class LandingComponent {
     },
   ];
 
-  protected readonly showcaseCovers = [
+  readonly showcaseCovers = [
     'https://covers.openlibrary.org/b/isbn/9780743273565-M.jpg',
     'https://covers.openlibrary.org/b/isbn/9780061120084-M.jpg',
     'https://covers.openlibrary.org/b/isbn/9780451524935-M.jpg',

@@ -19,30 +19,30 @@ import { SortOptions } from '../../shared/models';
   styleUrl: './shelf.css',
 })
 export class ShelfComponent {
-  protected readonly store = inject(LibraryStore);
+  readonly store = inject(LibraryStore);
   private readonly route = inject(ActivatedRoute);
 
-  protected readonly shelfId = toSignal(
+  readonly shelfId = toSignal(
     this.route.paramMap.pipe(map(p => p.get('shelfId') ?? '')),
     { initialValue: '' },
   );
 
-  protected readonly shelf = computed(() =>
+  readonly shelf = computed(() =>
     this.store.shelvesWithCounts().find(s => s.id === this.shelfId()),
   );
 
-  protected readonly books = computed(() =>
+  readonly books = computed(() =>
     this.store.booksOnShelf(this.shelfId())(),
   );
 
-  protected readonly sortOptions: { value: SortOptions['field']; label: string }[] = [
+  readonly sortOptions: { value: SortOptions['field']; label: string }[] = [
     { value: 'dateAdded', label: 'Date added' },
     { value: 'title', label: 'Title' },
     { value: 'author', label: 'Author' },
     { value: 'rating', label: 'Rating' },
   ];
 
-  protected updateSort(field: SortOptions['field']): void {
+  updateSort(field: SortOptions['field']): void {
     this.store.setSortOptions({ field, direction: 'desc' });
   }
 }

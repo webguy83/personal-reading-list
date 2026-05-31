@@ -28,7 +28,7 @@
 
   <!-- ─── Results ───────────────────────────────────────────────────────── -->
   @if (results().length > 0) {
-    <p class="results-count">{{ results().length }} results for "{{ query() }}"</p>
+    <p class="results-count">{{ results().length }} results for your search</p>
 
     <div class="results-grid">
       @for (book of results(); track book.apiId) {

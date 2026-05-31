@@ -21,7 +21,7 @@ import { ReadingProgressBarComponent } from '../../shared/components/reading-pro
   styleUrl: './book-detail.css',
 })
 export class BookDetailComponent {
-  protected readonly store = inject(LibraryStore);
+  readonly store = inject(LibraryStore);
   private readonly route = inject(ActivatedRoute);
 
   private readonly bookId = toSignal(
@@ -29,60 +29,60 @@ export class BookDetailComponent {
     { initialValue: '' },
   );
 
-  protected readonly book = computed(() =>
+  readonly book = computed(() =>
     this.store.books().find(b => b.id === this.bookId()),
   );
 
-  protected readonly progress = computed(() =>
+  readonly progress = computed(() =>
     this.store.progress()[this.bookId()] ?? null,
   );
 
-  protected readonly shelfName = computed(() => {
+  readonly shelfName = computed(() => {
     const book = this.book();
     if (!book?.shelfId) return null;
     return this.store.shelvesWithCounts().find(s => s.id === book.shelfId)?.name ?? null;
   });
 
-  protected readonly editingProgress = signal(false);
-  protected readonly editingNotes = signal(false);
-  protected currentPageInput = signal<number>(0);
-  protected notesInput = signal('');
+  readonly editingProgress = signal(false);
+  readonly editingNotes = signal(false);
+  currentPageInput = signal<number>(0);
+  notesInput = signal('');
 
-  protected startEditProgress(): void {
+  startEditProgress(): void {
     this.currentPageInput.set(this.progress()?.currentPage ?? 0);
     this.editingProgress.set(true);
   }
 
-  protected saveProgress(): void {
+  saveProgress(): void {
     const book = this.book();
     if (!book) return;
     this.store.updateProgress(book.id, this.currentPageInput());
     this.editingProgress.set(false);
   }
 
-  protected startEditNotes(): void {
+  startEditNotes(): void {
     this.notesInput.set(this.book()?.notes ?? '');
     this.editingNotes.set(true);
   }
 
-  protected saveNotes(): void {
+  saveNotes(): void {
     const book = this.book();
     if (!book) return;
     this.store.updateNotes(book.id, this.notesInput());
     this.editingNotes.set(false);
   }
 
-  protected rate(rating: number): void {
+  rate(rating: number): void {
     const book = this.book();
     if (book) this.store.updateRating(book.id, rating as 1 | 2 | 3 | 4 | 5);
   }
 
-  protected moveToShelf(shelfId: string): void {
+  moveToShelf(shelfId: string): void {
     const book = this.book();
     if (book) this.store.moveBook(book.id, shelfId);
   }
 
-  protected deleteBook(): void {
+  deleteBook(): void {
     const book = this.book();
     if (!book) return;
     if (confirm(`Remove "${book.title}" from your library?`)) {

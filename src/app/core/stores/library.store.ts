@@ -225,13 +225,17 @@ export class LibraryStore implements OnDestroy {
 
   async addBook(result: SearchResult, shelfId: string): Promise<void> {
     const uid = this.auth.currentUid();
-    if (!uid) return;
 
     // Optimistic duplicate check
     const existing = this._books().find(b => b.apiId === result.apiId);
     if (existing) throw new Error('DUPLICATE');
 
-    await this.svc.addBook(uid, result, shelfId);
+    if (uid) {
+      await this.svc.addBook(uid, result, shelfId);
+    } else if (this.auth.isGuest()) {
+      const newBook = this.guest.addBook(result, shelfId);
+      this._books.update(books => [...books, newBook]);
+    }
   }
 
   async moveBook(bookId: string, targetShelfId: string): Promise<void> {

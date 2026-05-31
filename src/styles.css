@@ -68,8 +68,42 @@ a:hover {
   outline-offset: 2px;
 }
 
-/* ─── Dark mode class (ThemeService applies .dark to <html>) ──────────────── */
+/* ─── ThemeService applies .dark to <html> for dark mode ─────────────────── */
+/*
+ * html:not(.dark) has specificity 0-1-1, which beats the
+ * @media (prefers-color-scheme: dark) { :root } block in tokens.css (0-1-0).
+ * This ensures explicit light mode works even when the OS is in dark mode.
+ */
+html:not(.dark) {
+  color-scheme: light;
+
+  --color-bg-primary: #faf8f5;
+  --color-bg-secondary: #f3f0eb;
+  --color-bg-tertiary: #ebe7e0;
+  --color-surface: #ffffff;
+  --color-border: #ddd8d0;
+  --color-border-subtle: #e8e4dd;
+
+  --color-text-primary: #2c2420;
+  --color-text-secondary: #5c534a;
+  --color-text-tertiary: #8c8278;
+
+  --color-accent: #a8612b;
+  --color-accent-hover: #8b4f20;
+  --color-accent-subtle: #fbf1e8;
+
+  --color-success: #3d7c4f;
+  --color-warning: #b8860b;
+  --color-error: #c0392b;
+
+  --shadow-sm: 0 1px 3px rgba(44, 36, 32, 0.06);
+  --shadow-md: 0 4px 8px -1px rgba(44, 36, 32, 0.08), 0 2px 4px -2px rgba(44, 36, 32, 0.04);
+  --shadow-lg: 0 12px 20px -4px rgba(44, 36, 32, 0.12), 0 4px 8px -4px rgba(44, 36, 32, 0.06);
+}
+
 .dark {
+  color-scheme: dark;
+
   --color-bg-primary: #1a1512;
   --color-bg-secondary: #231e1a;
   --color-bg-tertiary: #2e2822;

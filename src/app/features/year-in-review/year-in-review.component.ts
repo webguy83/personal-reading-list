@@ -16,22 +16,22 @@ import { LibraryStore } from '../../core/stores/library.store';
   styleUrl: './year-in-review.css',
 })
 export class YearInReviewComponent {
-  protected readonly store = inject(LibraryStore);
-  protected readonly currentYear = new Date().getFullYear();
-  protected readonly editingGoal = signal(false);
-  protected goalInput = signal(24);
+  readonly store = inject(LibraryStore);
+  readonly currentYear = new Date().getFullYear();
+  readonly editingGoal = signal(false);
+  goalInput = signal(24);
 
-  protected saveGoal(): void {
+  saveGoal(): void {
     this.store.setGoal(this.goalInput());
     this.editingGoal.set(false);
   }
 
-  protected maxMonthlyCount(booksByMonth: Record<string, number>): number {
+  maxMonthlyCount(booksByMonth: Record<string, number>): number {
     const vals = Object.values(booksByMonth);
     return vals.length ? Math.max(...vals, 1) : 1;
   }
 
-  protected monthAbbr(monthKey: string): string {
+  monthAbbr(monthKey: string): string {
     // monthKey expected as '1'–'12' or 'Jan'–'Dec'
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const n = parseInt(monthKey, 10);

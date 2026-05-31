@@ -18,8 +18,8 @@ import { CommonModule } from '@angular/common';
       } @else if (errored() || !coverUrl()) {
         <div class="book-cover-placeholder" [style.width.px]="size()" [style.height.px]="size() * 1.5">
           <div class="placeholder-spine"></div>
-          <div class="placeholder-title">{{ shortTitle() }}</div>
-          <div class="placeholder-author">{{ shortAuthor() }}</div>
+          <div class="placeholder-title" aria-hidden="true" [attr.data-title]="shortTitle()"></div>
+          <div class="placeholder-author" aria-hidden="true" [attr.data-author]="shortAuthor()"></div>
         </div>
       } @else {
         <div class="book-cover-skeleton" [style.width.px]="size()" [style.height.px]="size() * 1.5">
@@ -82,10 +82,16 @@ import { CommonModule } from '@angular/common';
       word-break: break-word;
       hyphens: auto;
     }
+    .placeholder-title::after {
+      content: attr(data-title);
+    }
     .placeholder-author {
       font-family: var(--font-sans);
       font-size: var(--text-xs);
       color: var(--color-text-tertiary);
+    }
+    .placeholder-author::after {
+      content: attr(data-author);
     }
     .book-cover-skeleton {
       background: linear-gradient(90deg, var(--color-bg-secondary) 25%, var(--color-bg-tertiary) 50%, var(--color-bg-secondary) 75%);

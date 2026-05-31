@@ -1,5 +1,5 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { Book, Shelf, ReadingProgress, ReadingGoal, DEFAULT_SHELVES, SampleBook } from '../../shared/models';
+import { Book, Shelf, ReadingProgress, ReadingGoal, DEFAULT_SHELVES, SampleBook, SearchResult } from '../../shared/models';
 import sampleBooks from '../../../../data/sample-books.json';
 
 // Distribute the sample books across shelves with realistic data
@@ -113,6 +113,32 @@ export class GuestService {
 
   updateBook(id: string, updates: Partial<Book>): void {
     this.books.update(books => books.map(b => (b.id === id ? { ...b, ...updates } : b)));
+  }
+
+  addBook(result: SearchResult, shelfId: string): Book {
+    const id = `guest-added-${Date.now()}`;
+    const newBook: Book = {
+      id,
+      apiId: result.apiId,
+      apiSource: result.apiSource,
+      title: result.title,
+      authors: result.authors,
+      coverUrl: result.coverUrl,
+      pageCount: result.pageCount,
+      publishYear: result.publishYear,
+      isbn10: result.isbn10,
+      isbn13: result.isbn13,
+      publisher: result.publisher,
+      description: result.description,
+      genres: result.genres,
+      shelfId,
+      dateAdded: new Date(),
+      dateFinished: null,
+      rating: null,
+      notes: null,
+    };
+    this.books.update(books => [...books, newBook]);
+    return newBook;
   }
 
   updateProgress(bookId: string, currentPage: number, totalPages: number | null): void {

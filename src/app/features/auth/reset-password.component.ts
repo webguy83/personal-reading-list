@@ -65,16 +65,16 @@ export class ResetPasswordComponent {
   private readonly auth = inject(AuthService);
   private readonly fb = inject(FormBuilder);
 
-  protected readonly loading = signal(false);
-  protected readonly error = signal<string | null>(null);
-  protected readonly sent = signal(false);
-  protected readonly sentEmail = signal('');
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly sent = signal(false);
+  readonly sentEmail = signal('');
 
-  protected readonly form = this.fb.nonNullable.group({
+  readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
   });
 
-  protected submit(): void {
+  submit(): void {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.loading.set(true);
     this.error.set(null);

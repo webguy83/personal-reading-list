@@ -34,16 +34,11 @@
 
   <!-- ─── Currently Reading ───────────────────────────────────────────────── -->
   @if (store.currentlyReading().length > 0) {
-    <section class="shelf-section" aria-labelledby="currently-reading-heading">
-      <div class="shelf-header">
-        <h2 id="currently-reading-heading" class="shelf-title">
-          <mat-icon>menu_book</mat-icon>
-          Currently Reading
-        </h2>
-        <a class="shelf-link" [routerLink]="['/library/shelf', 'currently-reading']">
-          View all <mat-icon>chevron_right</mat-icon>
-        </a>
-      </div>
+    <section class="shelf-section currently-reading-section" aria-labelledby="currently-reading-heading">
+      <h2 id="currently-reading-heading" class="shelf-title">
+        <mat-icon>menu_book</mat-icon>
+        Currently Reading
+      </h2>
 
       <div class="current-reading-list">
         @for (item of store.currentlyReading(); track item.id) {
@@ -69,6 +64,9 @@
           </a>
         }
       </div>
+      <a class="shelf-link" [routerLink]="['/library/shelf', 'currently-reading']">
+        View all <mat-icon>chevron_right</mat-icon>
+      </a>
     </section>
   }
 
@@ -79,7 +77,7 @@
         <div class="shelf-header">
           <h2 [id]="'shelf-' + shelf.id" class="shelf-title">
             {{ shelf.name }}
-            <span class="shelf-count">{{ shelf.bookCount }}</span>
+            <span class="shelf-count" aria-hidden="true">{{ shelf.bookCount }}</span>
           </h2>
           <a class="shelf-link" [routerLink]="['/library/shelf', shelf.id]">
             View all <mat-icon>chevron_right</mat-icon>

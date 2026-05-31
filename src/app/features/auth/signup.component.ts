@@ -80,11 +80,11 @@ export class SignupComponent {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
 
-  protected readonly loading = signal(false);
-  protected readonly error = signal<string | null>(null);
-  protected readonly showPw = signal(false);
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly showPw = signal(false);
 
-  protected readonly form = this.fb.nonNullable.group(
+  readonly form = this.fb.nonNullable.group(
     {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -93,7 +93,7 @@ export class SignupComponent {
     { validators: passwordsMatch },
   );
 
-  protected submit(): void {
+  submit(): void {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.loading.set(true);
     this.error.set(null);
