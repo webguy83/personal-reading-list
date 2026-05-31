@@ -51,6 +51,15 @@ export class App {
     { initialValue: false },
   );
 
+  /** True between NavigationStart and NavigationEnd — drives the route loading bar. */
+  protected readonly isNavigating = toSignal(
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationStart || e instanceof NavigationEnd),
+      map(e => e instanceof NavigationStart),
+    ),
+    { initialValue: false },
+  );
+
   /** Tracks the destination URL immediately on NavigationStart so nav items
    *  highlight without waiting for the lazy chunk to finish loading. */
   protected readonly activeUrl = toSignal(

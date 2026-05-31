@@ -1,3 +1,39 @@
+/* ─── Route loading bar ─────────────────────────────────────────────────── */
+
+.route-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.route-loader--active {
+  opacity: 1;
+}
+
+.route-loader--active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 50%;
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 0 2px 2px 0;
+  animation: route-bar-slide 1.2s ease-in-out infinite;
+}
+
+@keyframes route-bar-slide {
+  0%   { left: -50%; }
+  100% { left: 100%; }
+}
+
 /* ─── App Container ──────────────────────────────────────────────────────── */
 
 .app-container {
