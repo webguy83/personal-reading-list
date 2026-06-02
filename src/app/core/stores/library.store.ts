@@ -179,6 +179,17 @@ export class LibraryStore implements OnDestroy {
         this.clearData();
       }
     });
+
+    // Persist all guest state to localStorage whenever any signal changes.
+    // This is the single authoritative write — GuestService only provides initial data.
+    effect(() => {
+      if (!this.auth.isGuest()) return;
+      localStorage.setItem(GuestService.STORAGE_KEY, JSON.stringify({
+        books: this._books(),
+        progress: this._progress(),
+        goal: this._goal(),
+      }));
+    });
   }
 
   // ─── Load methods ──────────────────────────────────────────────────────────

@@ -42,6 +42,7 @@ import { ConfirmDialogComponent, type ConfirmDialogData } from '../../shared/com
               [routerLink]="item.path"
               [class.nav-icon--active]="activeUrl().startsWith(item.path)"
               [matTooltip]="item.label" matTooltipPosition="right"
+              [attr.aria-label]="item.label"
             >
               <mat-icon>{{ item.icon }}</mat-icon>
             </a>

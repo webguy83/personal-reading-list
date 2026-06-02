@@ -1,5 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
+import { GuestService } from '../services/guest.service';
 import {
   Auth,
   signInWithEmailAndPassword,
@@ -26,7 +27,12 @@ export class AuthService {
   readonly isLoading = computed(() => this._user() === undefined);
   readonly currentUid = computed(() => this._user()?.uid ?? null);
 
+  private static readonly GUEST_KEY = 'bookshelf-guest';
+
   constructor() {
+    if (localStorage.getItem(AuthService.GUEST_KEY)) {
+      this._isGuest.set(true);
+    }
     onAuthStateChanged(this.auth, user => this._user.set(user));
   }
 
@@ -34,6 +40,7 @@ export class AuthService {
     return from(
       signInWithEmailAndPassword(this.auth, email, password).then(() => {
         this._isGuest.set(false);
+        localStorage.removeItem(AuthService.GUEST_KEY);
         this.router.navigate(['/library']);
       }),
     );
@@ -43,6 +50,7 @@ export class AuthService {
     return from(
       createUserWithEmailAndPassword(this.auth, email, password).then(() => {
         this._isGuest.set(false);
+        localStorage.removeItem(AuthService.GUEST_KEY);
         this.router.navigate(['/library']);
       }),
     );
@@ -52,6 +60,8 @@ export class AuthService {
     return from(
       signOut(this.auth).then(() => {
         this._isGuest.set(false);
+        localStorage.removeItem(AuthService.GUEST_KEY);
+        GuestService.clearStorage();
         this.router.navigate(['/']);
       }),
     );
@@ -63,6 +73,7 @@ export class AuthService {
 
   enterGuestMode(): void {
     this._isGuest.set(true);
+    localStorage.setItem(AuthService.GUEST_KEY, '1');
     this.router.navigate(['/library']);
   }
 }

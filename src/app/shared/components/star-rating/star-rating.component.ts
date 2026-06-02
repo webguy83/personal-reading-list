@@ -35,7 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
       border: none;
       padding: 0;
       cursor: pointer;
-      color: var(--color-rating);
+      color: var(--color-accent);
       display: flex;
       align-items: center;
       transition: transform 0.1s ease;
@@ -54,6 +54,9 @@ import { MatIconModule } from '@angular/material/icon';
     }
     .star-btn:not(.filled) mat-icon {
       color: var(--color-border);
+    }
+    .star-btn.filled mat-icon {
+      color: var(--color-accent);
     }
   `],
 })

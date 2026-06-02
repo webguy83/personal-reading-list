@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, WritableSignal } from '@angular/core';
 import { Book, Shelf, ReadingProgress, ReadingGoal, DEFAULT_SHELVES, SampleBook, SearchResult } from '../../shared/models';
 import sampleBooks from '../../../../data/sample-books.json';
 
@@ -95,7 +95,7 @@ function buildGuestLibrary(): { books: Book[]; progress: Record<string, ReadingP
 
 @Injectable({ providedIn: 'root' })
 export class GuestService {
-  private readonly _data = buildGuestLibrary();
+  static readonly STORAGE_KEY = 'bookshelf-guest-library';
 
   readonly shelves: Shelf[] = [
     ...DEFAULT_SHELVES,
@@ -103,9 +103,46 @@ export class GuestService {
     { id: 'book-club', name: 'Book Club 2026', isDefault: false, position: 4 },
   ];
 
-  readonly books = signal<Book[]>(this._data.books);
-  readonly progress = signal<Record<string, ReadingProgress>>(this._data.progress);
-  readonly goal = signal<ReadingGoal>(this._data.goal);
+  readonly books: WritableSignal<Book[]>;
+  readonly progress: WritableSignal<Record<string, ReadingProgress>>;
+  readonly goal: WritableSignal<ReadingGoal>;
+
+  constructor() {
+    const initial = this.loadOrBuild();
+    this.books = signal(initial.books);
+    this.progress = signal(initial.progress);
+    this.goal = signal(initial.goal);
+  }
+
+  private loadOrBuild(): { books: Book[]; progress: Record<string, ReadingProgress>; goal: ReadingGoal } {
+    const raw = localStorage.getItem(GuestService.STORAGE_KEY);
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        return {
+          books: parsed.books.map((b: Book & { dateAdded: string; dateFinished: string | null }) => ({
+            ...b,
+            dateAdded: new Date(b.dateAdded),
+            dateFinished: b.dateFinished ? new Date(b.dateFinished) : null,
+          })),
+          progress: Object.fromEntries(
+            Object.entries(parsed.progress).map(([k, v]) => [
+              k,
+              { ...(v as ReadingProgress), lastUpdated: new Date((v as ReadingProgress & { lastUpdated: string }).lastUpdated) },
+            ]),
+          ),
+          goal: parsed.goal,
+        };
+      } catch {
+        // Corrupted data — fall through to fresh defaults
+      }
+    }
+    return buildGuestLibrary();
+  }
+
+  static clearStorage(): void {
+    localStorage.removeItem(GuestService.STORAGE_KEY);
+  }
 
   booksOnShelf(shelfId: string) {
     return computed(() => this.books().filter(b => b.shelfId === shelfId));
