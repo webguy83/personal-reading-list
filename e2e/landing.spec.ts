@@ -71,31 +71,31 @@ test.describe('Landing page', () => {
     await expect(page).toHaveURL('/');
   });
 
-  test('guest user navigating to /auth/login redirects to library', async ({ page }) => {
+  test('guest user can access /auth/login', async ({ page }) => {
     // Enter guest mode
     await page.getByRole('button', { name: /try as guest/i }).click();
     await expect(page).toHaveURL(/\/library$/);
-
-    // Try to access login page
+    
+    // Guest should be able to access login page
     await page.goto('/auth/login');
-    await expect(page).toHaveURL(/\/library$/);
+    await expect(page).toHaveURL(/\/auth\/login$/);
   });
 
-  test('guest user navigating to /auth/signup redirects to library', async ({ page }) => {
+  test('guest user can access /auth/signup', async ({ page }) => {
     // Enter guest mode
     await page.getByRole('button', { name: /try as guest/i }).click();
     await expect(page).toHaveURL(/\/library$/);
-
-    // Try to access signup page
+    
+    // Guest should be able to access signup page
     await page.goto('/auth/signup');
-    await expect(page).toHaveURL(/\/library$/);
+    await expect(page).toHaveURL(/\/auth\/signup$/);
   });
 
   test('guest user navigating to landing page redirects to library', async ({ page }) => {
     // Enter guest mode
     await page.getByRole('button', { name: /try as guest/i }).click();
     await expect(page).toHaveURL(/\/library$/);
-
+    
     // Try to access landing page
     await page.goto('/');
     await expect(page).toHaveURL(/\/library$/);

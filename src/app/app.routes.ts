@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
 import { landingGuard } from './core/auth/landing.guard';
+import { authAccessGuard } from './core/auth/auth-access.guard';
 
 export const routes: Routes = [
   {
@@ -10,7 +11,7 @@ export const routes: Routes = [
   },
   {
     path: 'auth',
-    canActivate: [landingGuard],
+    canActivate: [authAccessGuard],
     children: [
       { path: 'login', loadComponent: () => import('./features/auth/login.component').then(m => m.LoginComponent) },
       { path: 'signup', loadComponent: () => import('./features/auth/signup.component').then(m => m.SignupComponent) },
