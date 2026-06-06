@@ -75,7 +75,7 @@ test.describe('Landing page', () => {
     // Enter guest mode
     await page.getByRole('button', { name: /try as guest/i }).click();
     await expect(page).toHaveURL(/\/library$/);
-    
+
     // Try to access login page
     await page.goto('/auth/login');
     await expect(page).toHaveURL(/\/library$/);
@@ -85,7 +85,7 @@ test.describe('Landing page', () => {
     // Enter guest mode
     await page.getByRole('button', { name: /try as guest/i }).click();
     await expect(page).toHaveURL(/\/library$/);
-    
+
     // Try to access signup page
     await page.goto('/auth/signup');
     await expect(page).toHaveURL(/\/library$/);
@@ -95,7 +95,7 @@ test.describe('Landing page', () => {
     // Enter guest mode
     await page.getByRole('button', { name: /try as guest/i }).click();
     await expect(page).toHaveURL(/\/library$/);
-    
+
     // Try to access landing page
     await page.goto('/');
     await expect(page).toHaveURL(/\/library$/);
